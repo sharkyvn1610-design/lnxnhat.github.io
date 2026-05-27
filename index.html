@@ -447,13 +447,22 @@
     }
 
     // Tự động kiểm tra trạng thái đếm ngược khi khởi chạy trang
+    // Tự động kiểm tra trạng thái đếm ngược và bắt chính xác mã chìa khóa khi khởi chạy trang
     window.onload = () => {
-      const currentHash = location.hash || '';
       if (localStorage.getItem('lnxnhat_timer_end')) {
         startLockCountdown();
       }
-      // Kích hoạt lõi định tuyến router lần đầu
-      window.dispatchEvent(new HashChangeEvent('hashchange'));
+      
+      // Lấy chính xác những gì người dùng gõ trên thanh địa chỉ khi vừa bấm Enter vào web
+      let initialHash = (location.hash || '#/').replace('#/', '').replace('#', '');
+      
+      // Nếu gõ đúng chìa khóa bảo mật chủ nhà, mở cửa vào thẳng ad/home ngay từ lúc tải trang
+      if (initialHash === 'aD') {
+        location.hash = '#/aD/home';
+      } else {
+        // Kích hoạt lõi định tuyến router để cập nhật giao diện
+        window.dispatchEvent(new HashChangeEvent('hashchange'));
+      }
     };
   </script>
 </body>
