@@ -552,6 +552,359 @@
         window.dispatchEvent(new HashChangeEvent('hashchange'));
       }
     };
+  <script>
+    // 1. Dữ liệu gốc dự phòng ban đầu (Chỉ dùng khi bộ nhớ máy hoàn toàn trống rỗng)
+    const defaultDatabase = [
+      { id: "0001", name: "Nguyễn Văn A", class: "8/5", birth: "2012-05-20", note: "Học sinh lớp 8", sig: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKAAAABaCAYAAAA" },
+      { id: "0002", name: "Trần Thị B", class: "8/1", birth: "2012-09-12", note: "Thành viên ban sự kiện", sig: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKAAAABaCAYAAAA" }
+    ];
+
+    // 2. SỬA LỖI CORE: Kiểm tra và nạp chính xác dữ liệu từ LocalStorage
+    let localDatabase = [];
+    const savedData = localStorage.getItem('lnxnhat_db_backup');
+    
+    if (savedData) {
+      try {
+        localDatabase = JSON.parse(savedData);
+      } catch (e) {
+        console.error("Lỗi đọc dữ liệu sao lưu, khôi phục mặc định:", e);
+        localDatabase = [...defaultDatabase];
+      }
+    } else {
+      localDatabase = [...defaultDatabase];
+      localStorage.setItem('lnxnhat_db_backup', JSON.stringify(localDatabase));
+    }
+
+    // 3. Hàm kích hoạt sao lưu đồng bộ vĩnh viễn
+    function saveToBackupStorage() {
+      localStorage.setItem('lnxnhat_db_backup', JSON.stringify(localDatabase));
+    }
+
+    let globalTimerInterval = null;
+
+    function formatDateDisplay(dateString) {
+      if (!dateString) return 'Chưa cập nhật';
+      const parts = dateString.split('-');
+      if (parts.length !== 3) return dateString;
+      return `${parts[2]}/${parts[1]}/${parts[0]}`;
+    }
+
+    // --- BỘ ĐIỀU HƯỚNG ROUTER BẢO MẬT ---
+    function navigateWithRules(targetHash) {
+      if (!targetHash.startsWith('#/')) targetHash = targetHash.replace('#', '#/');
+      const tar = targetHash.replace('#/', '').replace('#', '');
+
+      if (localStorage.getItem('lnxnhat_locked') === 'true' && (tar.startsWith('guest/home') || tar.startsWith('guest/id'))) {
+        location.hash = '#/error';
+        return;
+      }
+
+      if (tar === 'aD' || tar === 'aD/home') { location.hash = '#/aD/home'; return; }
+      if (tar.startsWith('aD/')) { location.hash = targetHash; return; }
+      if (tar === 'guest') { location.hash = '#/guest/id/create'; return; }
+      if (tar === 'guest/id/create') { location.hash = targetHash; return; }
+
+      if (tar === 'guest/home' || (tar.startsWith('guest/id') && !tar.endsWith('/create'))) {
+        if (localStorage.getItem('lnxnhat_timer_end') !== null && localStorage.getItem('lnxnhat_locked') !== 'true') {
+          location.hash = targetHash;
+        } else {
+          location.hash = '#/error';
+        }
+        return;
+      }
+      location.hash = '#/error';
+    }
+
+    window.addEventListener('hashchange', () => {
+      let hash = location.hash || '#/';
+      let cleanHash = hash.replace('#/', '').replace('#', '');
+      
+      if (cleanHash === 'guest') { navigateWithRules('#/guest'); return; }
+      if (cleanHash === 'aD') { navigateWithRules('#/aD'); return; }
+
+      if (localStorage.getItem('lnxnhat_locked') === 'true' && (cleanHash.startsWith('guest/home') || cleanHash.startsWith('guest/id?='))) {
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+        document.getElementById('view-error').classList.add('active');
+        document.getElementById('lock-timer-display').style.display = 'none';
+        return;
+      }
+
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+
+      if (cleanHash === 'guest/id/create') {
+        document.getElementById('view-guest-id-create').classList.add('active');
+        document.getElementById('lock-timer-display').style.display = 'none';
+        setTimeout(() => initSignatureCanvas('g-canvas'), 50);
+      }
+      else if (cleanHash === 'guest/home') {
+        renderGridContainer('guest-grid-container', false);
+        document.getElementById('view-guest-home').classList.add('active');
+        startLockCountdown();
+      }
+      else if (cleanHash.startsWith('guest/id') && !cleanHash.endsWith('/create')) {
+        const idParam = cleanHash.split('?=')[1];
+        extractDetailRecord(idParam, 'guest-detail-card', false);
+        document.getElementById('view-guest-id').classList.add('active');
+        startLockCountdown();
+      }
+      else if (cleanHash === 'aD/home') {
+        renderGridContainer('ad-grid-container', true);
+        document.getElementById('view-ad-home').classList.add('active');
+        document.getElementById('lock-timer-display').style.display = 'none';
+      }
+      else if (cleanHash.startsWith('aD/id')) {
+        const idParam = cleanHash.split('?=')[1];
+        extractDetailRecord(idParam, 'ad-detail-card', true);
+        document.getElementById('view-ad-id').classList.add('active');
+        document.getElementById('lock-timer-display').style.display = 'none';
+      }
+      else if (cleanHash.startsWith('aD/edit')) {
+        const idParam = cleanHash.split('?=')[1];
+        openAdminEditForm(idParam);
+        document.getElementById('view-ad-edit').classList.add('active');
+        document.getElementById('lock-timer-display').style.display = 'none';
+      }
+      else if (cleanHash === 'aD/create') {
+        document.getElementById('view-ad-create').classList.add('active');
+        document.getElementById('lock-timer-display').style.display = 'none';
+        setTimeout(() => initSignatureCanvas('ad-canvas'), 50);
+      }
+      else {
+        document.getElementById('view-error').classList.add('active');
+        document.getElementById('lock-timer-display').style.display = 'none';
+      }
+    });
+
+    // --- BỘ ĐẾM NGƯỢC THỜI GIAN THỰC ---
+    function startLockCountdown() {
+      if (globalTimerInterval) clearInterval(globalTimerInterval);
+      const timerEndStr = localStorage.getItem('lnxnhat_timer_end');
+      if (!timerEndStr) return;
+
+      const timerEnd = parseInt(timerEndStr, 10);
+      const displayBanner = document.getElementById('lock-timer-display');
+      const displaySpan = document.getElementById('timer-countdown');
+      displayBanner.style.display = 'block';
+
+      globalTimerInterval = setInterval(() => {
+        const now = Date.now();
+        const timeLeft = timerEnd - now;
+
+        if (timeLeft <= 0) {
+          clearInterval(globalTimerInterval);
+          localStorage.setItem('lnxnhat_locked', 'true');
+          displayBanner.style.display = 'none';
+          location.hash = '#/error';
+        } else {
+          const totalSeconds = Math.floor(timeLeft / 1000);
+          const minutes = Math.floor(totalSeconds / 60);
+          const seconds = totalSeconds % 60;
+          displaySpan.innerText = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+      }, 250);
+    }
+
+    function renderGridContainer(containerId, isAdmin) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      container.innerHTML = "";
+      
+      localDatabase.forEach(item => {
+        const box = document.createElement('div');
+        box.className = "sig-box";
+        box.onclick = () => {
+          navigateWithRules(isAdmin ? `#aD/id?=${item.id}` : `#guest/id?=${item.id}`);
+        };
+        
+        box.innerHTML = `
+          <div class="name-tag">${item.name}</div>
+          <div class="sub-info">Lớp: ${item.class || 'N/A'}</div>
+          <div class="sub-info">Ngày sinh: ${formatDateDisplay(item.birth)}</div>
+          <img src="${item.sig.startsWith('data:') ? item.sig : 'data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'40\'><text x=\'10\' y=\'25\' fill=\'%23555\'>Chữ ký rỗng</text></svg>'}" />
+        `;
+        container.appendChild(box);
+      });
+    }
+
+    function extractDetailRecord(idParam, containerId, isAdmin) {
+      const target = localDatabase.find(i => i.id === idParam);
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      
+      if (!target) {
+        container.innerHTML = `<p style="color:var(--danger)">Hồ sơ không tồn tại.</p>`;
+        return;
+      }
+      
+      let actionButtons = `<button class="btn btn-secondary" style="flex:1" onclick="navigateWithRules('${isAdmin ? '#aD/home' : '#guest/home'}')">QUAY LẠI</button>`;
+      
+      if (isAdmin) {
+        actionButtons += `
+          <button class="btn btn-submit" style="flex:1" onclick="location.hash='#/aD/edit?=${target.id}'">SỬA</button>
+          <button class="btn btn-danger" style="flex:1" onclick="deleteAdminRecord('${target.id}')">XÓA HỒ SƠ</button>
+        `;
+      }
+
+      container.innerHTML = `
+        <h3 style="color:var(--blue-glow); margin-bottom:15px; font-family:'Orbitron'; text-align:center; font-size:1.1rem;">CHI TIẾT HỒ SƠ</h3>
+        <p style="margin-bottom:10px;"><b>Họ tên:</b> ${target.name}</p>
+        <p style="margin-bottom:10px;"><b>Lớp:</b> ${target.class || 'Chưa rõ'}</p>
+        <p style="margin-bottom:10px;"><b>Ngày sinh:</b> ${formatDateDisplay(target.birth)}</p>
+        <p style="margin-bottom:15px;"><b>Ghi chú:</b> ${target.note || 'Trống'}</p>
+        <p style="margin-bottom:5px;"><b>Hình ảnh chữ ký:</b></p>
+        <div style="background:#000; padding:15px; border-radius:4px; border:1px solid var(--border)">
+          <img src="${target.sig}" style="max-width:100%; height:auto;" />
+        </div>
+        <div style="display:flex; gap:10px; margin-top:20px;">
+          ${actionButtons}
+        </div>
+      `;
+    }
+
+    function deleteAdminRecord(idParam) {
+      if (confirm("Bạn có chắc chắn muốn XÓA VĨNH VIỄN hồ sơ này khỏi hệ thống không?")) {
+        localDatabase = localDatabase.filter(item => item.id !== idParam);
+        saveToBackupStorage(); 
+        alert("Đã xóa hộp thông tin hồ sơ thành công!");
+        location.hash = '#/aD/home';
+      }
+    }
+
+    function openAdminEditForm(idParam) {
+      const target = localDatabase.find(i => i.id === idParam);
+      if (!target) return;
+      document.getElementById('edit-id').value = target.id;
+      document.getElementById('edit-name').value = target.name;
+      document.getElementById('edit-class').value = target.class || '';
+      document.getElementById('edit-birth').value = target.birth || '';
+      document.getElementById('edit-note').value = target.note || '';
+    }
+
+    function saveAdminEditChanges() {
+      const id = document.getElementById('edit-id').value;
+      const target = localDatabase.find(i => i.id === id);
+      if (!target) return;
+
+      target.name = document.getElementById('edit-name').value.trim();
+      target.class = document.getElementById('edit-class').value.trim();
+      target.birth = document.getElementById('edit-birth').value;
+      target.note = document.getElementById('edit-note').value.trim();
+
+      if (!target.name) { alert("Vui lòng điền họ tên!"); return; }
+
+      saveToBackupStorage();
+      alert("Cập nhật thông tin hồ sơ thành công!");
+      location.hash = '#/aD/home';
+    }
+
+    // --- CANVAS CHỮ KÝ ---
+    let canvases = {}, ctxs = {}, drawing = {};
+    function initSignatureCanvas(canvasId) {
+      const canvas = document.getElementById(canvasId); if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      canvases[canvasId] = canvas; ctxs[canvasId] = ctx; drawing[canvasId] = false;
+
+      canvas.width = canvas.parentElement.clientWidth; canvas.height = 180;
+      ctx.fillStyle = '#000000'; ctx.fillRect(0, 0, canvas.width, 180);
+      ctx.strokeStyle = '#00ff66'; ctx.lineWidth = 3; ctx.lineCap = 'round';
+
+      const getPos = (e) => {
+        const r = canvas.getBoundingClientRect();
+        return { x: (e.clientX || e.touches[0].clientX) - r.left, y: (e.clientY || e.touches[0].clientY) - r.top };
+      };
+      canvas.onmousedown = (e) => { drawing[canvasId] = true; ctx.beginPath(); let p = getPos(e); ctx.moveTo(p.x, p.y); };
+      canvas.onmousemove = (e) => { if(!drawing[canvasId]) return; let p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); };
+      canvas.onmouseup = () => drawing[canvasId] = false;
+      canvas.ontouchstart = (e) => { drawing[canvasId] = true; ctx.beginPath(); let p = getPos(e); ctx.moveTo(p.x, p.y); };
+      canvas.ontouchmove = (e) => { if(!drawing[canvasId]) return; let p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); };
+      canvas.ontouchend = () => drawing[canvasId] = false;
+    }
+    
+    function clearSignatureCanvas(canvasId, event) { 
+      if(event) event.stopPropagation();
+      const canvas = canvases[canvasId]; const ctx = ctxs[canvasId];
+      if(ctx && canvas) { ctx.fillStyle = '#000000'; ctx.fillRect(0, 0, canvas.width, 180); } 
+    }
+
+    // --- SUBMIT DỮ LIỆU ---
+    function handleGuestSubmit() {
+      let nextNum = localDatabase.length + 1;
+      let generatedId = String(nextNum).padStart(4, '0');
+
+      const name = document.getElementById('g-name').value.trim();
+      const cls = document.getElementById('g-class').value.trim();
+      const birth = document.getElementById('g-birth').value;
+      const note = document.getElementById('g-note').value.trim();
+      const canvas = canvases['g-canvas'];
+      const sigData = canvas ? canvas.toDataURL() : "";
+
+      if (!name) { alert("Vui lòng nhập họ tên!"); return; }
+
+      // Gửi Google Form ngầm
+      const formUrl = "https://docs.google.com/forms/u/0/d/e/1FAIpQLSdN-r671XTq3CPWkldA1E_6u1IckFsG-_URc8YSUEHNKLKppg/formResponse";
+      const formData = new FormData();
+      formData.append("entry.804035975", generatedId);
+      formData.append("entry.1227843883", `${name} - Lớp: ${cls} (${birth})`);
+      formData.append("entry.919040770", sigData); 
+      fetch(formUrl, { method: "POST", body: formData, mode: "no-cors" }).catch(err => console.error(err));
+
+      localDatabase.push({ id: generatedId, name: name, class: cls, birth: birth, note: note, sig: sigData });
+      saveToBackupStorage();
+
+      alert("Xử lý hoàn thành! Hệ thống mở quyền xem danh sách trong 1 phút 30 giây.");
+
+      const duration = 1 * 60 * 1000 + 30 * 1000; 
+      localStorage.setItem('lnxnhat_timer_end', (Date.now() + duration).toString());
+      localStorage.setItem('lnxnhat_locked', 'false');
+
+      document.getElementById('g-name').value = "";
+      document.getElementById('g-class').value = "";
+      document.getElementById('g-birth').value = "";
+      document.getElementById('g-note').value = "";
+      clearSignatureCanvas('g-canvas');
+
+      location.hash = '#/guest/home';
+    }
+
+    function handleAdminSubmit() {
+      let nextNum = localDatabase.length + 1;
+      let generatedId = String(nextNum).padStart(4, '0');
+
+      const name = document.getElementById('ad-name').value.trim();
+      const cls = document.getElementById('ad-class').value.trim();
+      const birth = document.getElementById('ad-birth').value;
+      const note = document.getElementById('ad-note').value.trim();
+      const canvas = canvases['ad-canvas'];
+      const sigData = canvas ? canvas.toDataURL() : "";
+
+      if (!name) { alert("Vui lòng điền họ tên!"); return; }
+
+      localDatabase.push({ id: generatedId, name: name, class: cls, birth: birth, note: note, sig: sigData });
+      saveToBackupStorage();
+
+      alert("Admin tạo hồ sơ thành công!");
+      
+      document.getElementById('ad-name').value = "";
+      document.getElementById('ad-class').value = "";
+      document.getElementById('ad-birth').value = "";
+      document.getElementById('ad-note').value = "";
+      clearSignatureCanvas('ad-canvas');
+
+      location.hash = '#/aD/home';
+    }
+
+    window.onload = () => {
+      if (localStorage.getItem('lnxnhat_timer_end')) {
+        startLockCountdown();
+      }
+      
+      let initialHash = (location.hash || '#/').replace('#/', '').replace('#', '');
+      if (initialHash === 'aD') {
+        location.hash = '#/aD/home';
+      } else {
+        window.dispatchEvent(new HashChangeEvent('hashchange'));
+      }
+    };
   </script>
 </body>
 </html>
