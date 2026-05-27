@@ -31,55 +31,113 @@
       pointer-events: none; z-index: 9999;
     }
 
-    .view { display: none; padding: 30px 20px; max-width: 1200px; margin: 0 auto; animation: scanline 0.4s ease-out; }
+    /* Khung Header chứa Logo LNXNHAT gốc */
+    header { text-align: center; padding: 30px 10px 10px 10px; }
+    .logo-main { font-family: 'Orbitron', sans-serif; font-size: 2.5rem; font-weight: 900; color: var(--blue-glow); text-shadow: 0 0 15px rgba(0, 240, 255, 0.6); letter-spacing: 5px; }
+    .logo-sub { font-family: 'Share Tech Mono', monospace; font-size: 0.85rem; color: var(--dim); letter-spacing: 2px; margin-top: 5px; }
+
+    /* Bộ đếm ngược thời gian hiển thị trên góc */
+    .timer-banner { background: rgba(255, 0, 85, 0.1); border: 1px solid var(--danger); color: var(--danger); font-family: 'Orbitron', sans-serif; padding: 10px; text-align: center; border-radius: 6px; max-width: 300px; margin: 0 auto 20px auto; font-weight: bold; display: none; box-shadow: 0 0 10px rgba(255,0,85,0.2); }
+
+    .view { display: none; padding: 10px 20px 40px 20px; max-width: 1200px; margin: 0 auto; animation: scanline 0.4s ease-out; }
     .view.active { display: block; }
     @keyframes scanline { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-    h1 { font-family: 'Orbitron', sans-serif; color: var(--blue-glow); text-shadow: 0 0 10px rgba(0,240,255,0.4); text-align: center; margin-bottom: 10px; letter-spacing: 2px; }
-    .sub-title { text-align: center; color: var(--dim); font-size: 0.9rem; margin-bottom: 30px; font-family: 'Orbitron'; }
-    
-    .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; margin-top: 20px; }
+    .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; margin-top: 20px; }
     
     .sig-box { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; padding: 15px; position: relative; cursor: pointer; transition: all 0.2s; }
     .sig-box:hover { border-color: var(--blue-glow); box-shadow: 0 0 15px rgba(0,240,255,0.2); }
-    .sig-box .name-tag { font-weight: 600; font-size: 0.95rem; color: var(--blue-glow); margin-bottom: 10px; border-bottom: 1px dashed var(--border); padding-bottom: 5px; }
-    .sig-box img { width: 100%; height: 110px; background: #000; object-fit: contain; border-radius: 4px; border: 1px solid rgba(0, 240, 255, 0.1); }
+    .sig-box .name-tag { font-weight: 600; font-size: 0.95rem; color: var(--blue-glow); margin-bottom: 5px; border-bottom: 1px dashed var(--border); padding-bottom: 5px; }
+    .sig-box .sub-info { font-size: 0.8rem; color: var(--dim); margin-bottom: 10px; }
+    .sig-box img { width: 100%; height: 100px; background: #000; object-fit: contain; border-radius: 4px; }
     
-    .add-box { background: rgba(0, 114, 255, 0.05); border: 2px dashed var(--border); border-radius: 8px; min-height: 175px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; }
+    .add-box { background: rgba(0, 114, 255, 0.05); border: 2px dashed var(--border); border-radius: 8px; min-height: 165px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; }
     .add-box:hover { border-color: var(--blue-glow); background: rgba(0, 240, 255, 0.05); }
     .add-box .plus-icon { font-size: 3rem; color: var(--dim); transition: 0.2s; }
     .add-box:hover .plus-icon { color: var(--blue-glow); transform: scale(1.1); }
 
-    .debug-bar { background: #0d1117; padding: 10px; display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; border-bottom: 1px solid #21262d; font-size: 0.85rem; font-family: 'Orbitron'; }
-    .debug-bar a { color: #fff; text-decoration: none; padding: 4px 12px; border: 1px solid var(--border); border-radius: 4px; background: rgba(0, 114, 255, 0.1); transition: 0.2s; }
-    .debug-bar a:hover { border-color: var(--blue-glow); box-shadow: 0 0 10px var(--blue-glow); background: var(--panel); }
+    .form-container { max-width: 600px; margin: 0 auto; background: var(--panel); border: 1px solid var(--border); padding: 30px; border-radius: 8px; }
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; font-size: 0.75rem; font-family: 'Orbitron'; color: var(--dim); margin-bottom: 8px; letter-spacing: 1px; }
+    .form-group input, .form-group textarea { width: 100%; background: #000; border: 1px solid var(--border); padding: 12px; color: #fff; border-radius: 4px; font-family: 'Exo 2'; }
+    .form-group input:focus, .form-group textarea:focus { border-color: var(--blue-glow); outline: none; }
+    
+    .canvas-area { position: relative; background: #000; border: 1px solid var(--border); border-radius: 4px; overflow: hidden; margin-top: 5px; }
+    canvas { display: block; width: 100%; height: 180px; cursor: crosshair; }
+    .clear-sig-btn { position: absolute; top: 10px; right: 10px; background: rgba(255,0,85,0.2); border: 1px solid var(--danger); color: var(--danger); padding: 4px 10px; border-radius: 4px; font-size: 0.75rem; cursor: pointer; font-weight: bold; z-index: 10; }
+    .clear-sig-btn:hover { background: var(--danger); color: #fff; }
+
+    .btn { padding: 12px 24px; font-family: 'Orbitron'; font-weight: bold; border-radius: 4px; cursor: pointer; border: none; font-size: 0.85rem; }
+    .btn-submit { background: var(--blue-accent); color: white; box-shadow: 0 4px 10px rgba(0,114,255,0.4); }
+    .btn-submit:hover { background: #2687ff; }
+    .btn-danger { background: var(--danger); color: white; }
+    
+    .error-container { text-align: center; padding-top: 60px; color: var(--danger); }
+    .error-code { font-family: 'Orbitron'; font-size: 6rem; font-weight: 900; text-shadow: 0 0 20px rgba(255,0,85,0.4); }
   </style>
 </head>
 <body>
 
-  <div class="debug-bar">
-    <span style="color:var(--success)">GUEST VIEW:</span>
-    <a href="#/guest/home">/guest/home (Xem Trang Chủ Khách)</a>
-    
-    <span style="color:var(--danger); margin-left: 20px;">ADMIN VIEW:</span>
-    <a href="#/ad/home">/ad/home (Xem Trang Chủ Admin)</a>
+  <header>
+    <div class="logo-main">LNXNHAT</div>
+    <div class="logo-sub">SECURITY SYSTEM INTEGRATION</div>
+  </header>
+
+  <div class="timer-banner" id="lock-timer-display">
+    THỜI GIAN TRUY CẬP CÒN LẠI: <span id="timer-countdown">01:30</span>
   </div>
 
   <div id="router-wrapper">
     
+    <div id="view-error" class="view">
+      <div class="error-container">
+        <div class="error-code">403</div>
+        <h2 style="font-family:'Orbitron'">ACCESS DENIED / TIMEOUT LOGGED</h2>
+        <p style="margin-top:15px; color:var(--dim)" id="error-message-text">Quy trình truy cập không hợp lệ hoặc thời gian xem hồ sơ của thiết bị này đã hết hạn.</p>
+      </div>
+    </div>
+
+    <div id="view-guest-id" class="view">
+      <div class="form-container" id="guest-detail-card"></div>
+    </div>
+
     <div id="view-guest-home" class="view">
-      <h1>GUEST PANEL — SYSTEM SIGNATURES</h1>
-      <div class="sub-title">Đường dẫn giả lập: lnxnhat.github.io/guest/home</div>
-      
       <div class="card-grid" id="guest-grid-container"></div>
     </div>
 
+    <div id="view-guest-id-create" class="view">
+      <div class="form-container">
+        <div class="form-group">
+          <label>Mã ID tự động (Hệ thống)</label>
+          <input type="text" id="g-id" readonly style="font-family:'Share Tech Mono'; color:var(--blue-glow); font-size:1.3rem;" />
+        </div>
+        <div class="form-group">
+          <label>Họ và Tên</label>
+          <input type="text" id="g-name" placeholder="Nhập tên của bạn..." />
+        </div>
+        <div class="form-group">
+          <label>Năm sinh</label>
+          <input type="number" id="g-birth" placeholder="Ví dụ: 2000" />
+        </div>
+        <div class="form-group">
+          <label>Ghi chú</label>
+          <textarea id="g-note" rows="2" placeholder="Nhập ghi chú (nếu có)..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>Bảng ký tên điện tử</label>
+          <div class="canvas-area">
+            <button class="clear-sig-btn" onclick="clearSignatureCanvas(event)">XÓA KÝ LẠI</button>
+            <canvas id="g-canvas"></canvas>
+          </div>
+        </div>
+        <button class="btn btn-submit" style="width:100%" onclick="handleGuestSubmit()">HOÀN THÀNH & LƯU HỆ THỐNG</button>
+      </div>
+    </div>
+
     <div id="view-ad-home" class="view">
-      <h1>ADMIN CONTROL PANEL</h1>
-      <div class="sub-title">Đường dẫn giả lập: lnxnhat.github.io/aD/home</div>
-      
+      <h2 style="font-family:'Orbitron'; color:var(--blue-glow); text-align:center; margin-bottom:20px;">ADMIN PANEL</h2>
       <div class="card-grid">
-        <div class="add-box" onclick="alert('Tính năng chuyển đến Form tạo hồ sơ mới!')">
+        <div class="add-box" onclick="navigateWithRules('#/ad/create')">
           <div class="plus-icon">+</div>
           <div style="font-family:'Orbitron'; font-size:0.8rem; color:var(--dim); margin-top:5px">THÊM HỒ SƠ MỚI</div>
         </div>
@@ -87,48 +145,179 @@
       </div>
     </div>
 
+    <div id="view-ad-id" class="view">
+      <div class="form-container" id="ad-detail-card"></div>
+    </div>
+
+    <div id="view-ad-create" class="view">
+      <h2 style="font-family:'Orbitron'; color:var(--blue-glow); text-align:center; margin-bottom:20px;">ADMIN CREATE</h2>
+      <div class="form-container">
+        <div class="form-group">
+          <label>Mã ID Hệ thống</label>
+          <input type="text" id="ad-id" readonly style="font-family:'Share Tech Mono'; color:var(--blue-glow);" />
+        </div>
+        <div class="form-group">
+          <label>Tên biểu mẫu / Nhân sự</label>
+          <input type="text" id="ad-name" placeholder="Nhập định danh..." />
+        </div>
+        <button class="btn btn-submit" style="width:100%" onclick="handleAdminSubmit()">XÁC NHẬN TẠO HỒ SƠ</button>
+      </div>
+    </div>
+
   </div>
 
   <script>
-    // Giả lập dữ liệu có sẵn 2 tên bất kỳ và 2 hình ảnh chữ ký ngẫu nhiên (nét vẽ mực xanh phát quang trên nền đen)
     let localDatabase = [
-      { 
-        id: "0001", 
-        name: "Nguyễn Lâm Nhật", 
-        sig: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='250' height='110' style='background:black'><path d='M 30 60 Q 70 20 110 70 T 190 40 T 220 50 M 50 80 L 200 30' stroke='%2300ff66' stroke-width='3' fill='none' stroke-linecap='round'/></svg>" 
-      },
-      { 
-        id: "0002", 
-        name: "Trần Minh Quang", 
-        sig: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='250' height='110' style='background:black'><path d='M 40 40 Q 90 90 120 30 T 180 80 T 210 20 M 30 50 Q 130 10 210 80' stroke='%2300f0ff' stroke-width='3' fill='none' stroke-linecap='round'/></svg>" 
-      }
+      { id: "0001", name: "Nguyễn Văn A", birth: "2010", note: "Học sinh lớp 8", sig: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKAAAABaCAYAAAA" },
+      { id: "0002", name: "Trần Thị B", birth: "2011", note: "Thành viên ban sự kiện", sig: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKAAAABaCAYAAAA" }
     ];
 
-    // --- BỘ ĐIỀU HƯỚNG ROUTER TỰ ĐỘNG BẮT LINK URL ---
-    window.addEventListener('hashchange', routerCore);
-    
-    function routerCore() {
-      let hash = location.hash || '#/guest/home'; // Mặc định nếu không có hash sẽ vào guest/home
-      let cleanHash = hash.replace('#/', '').replace('#', '').toLowerCase();
+    let currentSelectedId = ""; 
+    let previousHash = "";      
+    let globalTimerInterval = null;
 
-      // Tắt toàn bộ màn hình cũ trước khi bật màn hình mới
-      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-
-      if (cleanHash === 'guest/home') {
-        renderGridContainer('guest-grid-container');
-        document.getElementById('view-guest-home').classList.add('active');
+    // --- BỘ ĐIỀU HƯỚNG ROUTER QUY TẮC NGHIÊM NGẶT ---
+    function navigateWithRules(targetHash) {
+      if (!targetHash.startsWith('#/')) {
+        targetHash = targetHash.replace('#', '#/');
       }
-      else if (cleanHash === 'ad/home' || cleanHash === 'ad') {
-        renderGridContainer('ad-grid-container');
-        document.getElementById('view-ad-home').classList.add('active');
+      
+      const currentHash = location.hash || '#/';
+      const cur = currentHash.replace('#/', '').replace('#', '').toLowerCase();
+      const tar = targetHash.replace('#/', '').replace('#', '').toLowerCase();
+
+      // Kiểm tra xem thiết bị này đã từng bị khóa trang home chưa
+      if (localStorage.getItem('lnxnhat_locked') === 'true' && tar === 'guest/home') {
+        document.getElementById('error-message-text').innerText = "Thời gian truy cập xem danh sách hồ sơ trên thiết bị này đã hết hạn và bị khóa hoàn toàn.";
+        location.hash = '#/error';
+        return;
+      }
+
+      let allowed = false;
+
+      if (tar === 'guest/id/create' || tar === 'guest' || tar === '') {
+        allowed = true;
+      }
+      else if (tar === 'guest/home') {
+        // Chỉ cho phép xem danh sách nếu đang trong thời gian đếm ngược hợp lệ
+        if (localStorage.getItem('lnxnhat_timer_end') !== null && localStorage.getItem('lnxnhat_locked') !== 'true') {
+          allowed = true;
+        }
+      }
+      else if (tar.startsWith('guest/id') && !tar.endsWith('/create')) {
+        if (cur === 'guest/home' && localStorage.getItem('lnxnhat_locked') !== 'true') allowed = true;
+      }
+      else if (tar === 'ad/home' || tar === 'ad/create' || tar.startsWith('ad/id')) {
+        allowed = true; 
+      }
+
+      if (allowed) {
+        previousHash = currentHash;
+        location.hash = targetHash;
       } else {
-        // Nếu gõ các link khác, tự động trả về guest/home để test cho dễ
-        location.hash = '#/guest/home';
+        location.hash = '#/error';
       }
     }
 
-    // --- HÀM VẼ CÁC Ô THÔNG TIN LÊN MÀN HÌNH ---
-    function renderGridContainer(containerId) {
+    window.addEventListener('hashchange', routerCore);
+    
+    function routerCore() {
+      let hash = location.hash || '#/';
+      let cleanHash = hash.replace('#/', '').replace('#', '');
+      
+      // Quy tắc chuyển thẳng: Khi vào gốc #/guest hoặc không có hash, tự nhảy tới form nhập liệu luôn
+      if (cleanHash === '' || cleanHash === 'guest') {
+        location.hash = '#/guest/id/create';
+        return;
+      }
+
+      let checkHash = cleanHash.toLowerCase();
+
+      // Kiểm tra trạng thái khóa thời gian thực
+      if (localStorage.getItem('lnxnhat_locked') === 'true' && (checkHash === 'guest/home' || checkHash.startsWith('guest/id?='))) {
+        document.getElementById('error-message-text').innerText = "Thời gian xem hồ sơ đã hết hạn. Hệ thống bảo mật tự động khóa thiết bị.";
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+        document.getElementById('view-error').classList.add('active');
+        document.getElementById('lock-timer-display').style.display = 'none';
+        return;
+      }
+
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+
+      if (checkHash === 'guest/home') {
+        renderGridContainer('guest-grid-container', false);
+        document.getElementById('view-guest-home').classList.add('active');
+        startLockCountdown(); // Đảm bảo bộ đếm luôn chạy khi ở trang này
+      }
+      else if (checkHash.startsWith('guest/id') && !checkHash.endsWith('/create')) {
+        const idParam = cleanHash.split('?=')[1]; 
+        extractDetailRecord(idParam, 'guest-detail-card', false);
+        document.getElementById('view-guest-id').classList.add('active');
+        startLockCountdown();
+      }
+      else if (checkHash === 'guest/id/create') {
+        setupCreateForm('g-id');
+        document.getElementById('view-guest-id-create').classList.add('active');
+        setTimeout(initSignatureCanvas, 50); 
+      }
+      else if (checkHash === 'ad/home') {
+        renderGridContainer('ad-grid-container', true);
+        document.getElementById('view-ad-home').classList.add('active');
+      }
+      else if (checkHash.startsWith('ad/id')) {
+        const idParam = cleanHash.split('?=')[1];
+        extractDetailRecord(idParam, 'ad-detail-card', true);
+        document.getElementById('view-ad-id').classList.add('active');
+      }
+      else if (checkHash === 'ad/create') {
+        setupCreateForm('ad-id');
+        document.getElementById('view-ad-create').classList.add('active');
+      }
+      else {
+        document.getElementById('view-error').classList.add('active');
+      }
+    }
+
+    // --- CƠ CHẾ ĐẾM NGƯỢC THỜI GIAN THỰC CHỐNG TẮT TAB/F5 ---
+    function startLockCountdown() {
+      if (globalTimerInterval) clearInterval(globalTimerInterval);
+      
+      const timerEndStr = localStorage.getItem('lnxnhat_timer_end');
+      if (!timerEndStr) return;
+
+      const timerEnd = parseInt(timerEndStr, 10);
+      const displayBanner = document.getElementById('lock-timer-display');
+      const displaySpan = document.getElementById('timer-countdown');
+      
+      displayBanner.style.display = 'block';
+
+      globalTimerInterval = setInterval(() => {
+        const now = Date.now();
+        const timeLeft = timerEnd - now;
+
+        if (timeLeft <= 0) {
+          clearInterval(globalTimerInterval);
+          localStorage.setItem('lnxnhat_locked', 'true');
+          displayBanner.style.display = 'none';
+          routerCore(); // Kích hoạt chặn khóa màn hình lập tức
+        } else {
+          // Tính toán số phút và giây còn lại từ mili-giây
+          const totalSeconds = Math.floor(timeLeft / 1000);
+          const minutes = Math.floor(totalSeconds / 60);
+          const seconds = totalSeconds % 60;
+          displaySpan.innerText = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+      }, 250);
+    }
+
+    function setupCreateForm(inputFieldId) {
+      let nextNum = localDatabase.length + 1;
+      let generatedId = String(nextNum).padStart(4, '0');
+      const field = document.getElementById(inputFieldId);
+      if (field) field.value = generatedId;
+    }
+
+    function renderGridContainer(containerId, isAdmin) {
       const container = document.getElementById(containerId);
       if (!container) return;
       container.innerHTML = "";
@@ -137,19 +326,125 @@
         const box = document.createElement('div');
         box.className = "sig-box";
         box.onclick = () => {
-          alert(`Bạn vừa bấm vào hồ sơ:\n- ID: ${item.id}\n- Tên: ${item.name}`);
+          currentSelectedId = item.id;
+          navigateWithRules(isAdmin ? `#ad/id?=${item.id}` : `#guest/id?=${item.id}`);
         };
         
         box.innerHTML = `
           <div class="name-tag">${item.name} (ID: ${item.id})</div>
-          <img src="${item.sig}" alt="Signature"/>
+          <div class="sub-info">Năm sinh: ${item.birth || 'N/A'}</div>
+          <img src="${item.sig.startsWith('data:') ? item.sig : 'data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'40\'><text x=\'10\' y=\'25\' fill=\'%23555\'>Chữ ký rỗng</text></svg>'}" />
         `;
         container.appendChild(box);
       });
     }
 
-    // Chạy kích hoạt ngay khi trang web tải xong
+    function extractDetailRecord(idParam, containerId, isAdmin) {
+      const target = localDatabase.find(i => i.id === idParam);
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      
+      if (!target) {
+        container.innerHTML = `<p style="color:var(--danger)">Hồ sơ không tồn tại.</p>`;
+        return;
+      }
+      
+      container.innerHTML = `
+        <h3 style="color:var(--blue-glow); margin-bottom:15px; font-family:'Orbitron'; text-align:center;">HỒ SƠ MÃ SỐ: ${target.id}</h3>
+        <p style="margin-bottom:10px;"><b>Họ tên nhân sự:</b> ${target.name}</p>
+        <p style="margin-bottom:10px;"><b>Năm sinh:</b> ${target.birth || 'Không rõ'}</p>
+        <p style="margin-bottom:15px;"><b>Ghi chú nội bộ:</b> ${target.note || 'Trống'}</p>
+        <p style="margin-bottom:5px;"><b>Hình ảnh chữ ký xác thực:</b></p>
+        <div style="background:#000; padding:15px; border-radius:4px; border:1px solid var(--border)">
+          <img src="${target.sig}" style="max-width:100%; height:auto;" />
+        </div>
+        <div style="display:flex; gap:10px; margin-top:20px;">
+          <button class="btn btn-submit" style="flex:1" onclick="navigateWithRules('${isAdmin ? '#/ad/home' : '#/guest/home'}')">QUAY LẠI DANH SÁCH</button>
+        </div>
+      `;
+    }
+
+    let canvas, ctx, drawing = false;
+    function initSignatureCanvas() {
+      canvas = document.getElementById('g-canvas'); if (!canvas) return;
+      ctx = canvas.getContext('2d');
+      canvas.width = canvas.parentElement.clientWidth; canvas.height = 180;
+      ctx.fillStyle = '#000000'; ctx.fillRect(0, 0, canvas.width, 180);
+      ctx.strokeStyle = '#00ff66'; ctx.lineWidth = 3; ctx.lineCap = 'round';
+
+      const getPos = (e) => {
+        const r = canvas.getBoundingClientRect();
+        return { x: (e.clientX || e.touches[0].clientX) - r.left, y: (e.clientY || e.touches[0].clientY) - r.top };
+      };
+      canvas.onmousedown = (e) => { drawing = true; ctx.beginPath(); let p = getPos(e); ctx.moveTo(p.x, p.y); };
+      canvas.onmousemove = (e) => { if(!drawing) return; let p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); };
+      canvas.onmouseup = () => drawing = false;
+      canvas.ontouchstart = (e) => { drawing = true; ctx.beginPath(); let p = getPos(e); ctx.moveTo(p.x, p.y); };
+      canvas.ontouchmove = (e) => { if(!drawing) return; let p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); };
+      canvas.ontouchend = () => drawing = false;
+    }
+    
+    function clearSignatureCanvas(event) { 
+      if(event) event.stopPropagation();
+      if(ctx && canvas) { ctx.fillStyle = '#000000'; ctx.fillRect(0, 0, canvas.width, 180); } 
+    }
+
+    // --- GỬI GOOGLE FORM VÀ KÍCH HOẠT BỘ KHÓA THỜI GIAN REALTIME ---
+    function handleGuestSubmit() {
+      const id = document.getElementById('g-id').value;
+      const name = document.getElementById('g-name').value.trim();
+      const birth = document.getElementById('g-birth').value.trim();
+      const note = document.getElementById('g-note').value.trim();
+      const sigData = canvas ? canvas.toDataURL() : "";
+
+      if (!name) { alert("Vui lòng nhập họ tên!"); return; }
+
+      // Đẩy data ngầm lên Google Form
+      const formUrl = "https://docs.google.com/forms/u/0/d/e/1FAIpQLSdN-r671XTq3CPWkldA1E_6u1IckFsG-_URc8YSUEHNKLKppg/formResponse";
+      const formData = new FormData();
+      formData.append("entry.804035975", id);
+      formData.append("entry.1227843883", name);
+      formData.append("entry.919040770", sigData); 
+
+      fetch(formUrl, { method: "POST", body: formData, mode: "no-cors" })
+      .catch(err => console.error(err));
+
+      // Thêm vào database tạm thời của phiên chạy hiện tại
+      localDatabase.push({ id: id, name: name, birth: birth, note: note, sig: sigData });
+      
+      alert("Xử lý hoàn thành! Bạn có 1 phút 30 giây để xem danh sách trước khi liên kết tự động đóng.");
+
+      // THIẾT LẬP THỜI GIAN CHẾT (Mốc thời gian hiện tại + 90 giây)
+      const duration = 1 * 60 * 1000 + 30 * 1000; // 1 phút 30 giây tính theo mili-giây
+      localStorage.setItem('lnxnhat_timer_end', (Date.now() + duration).toString());
+      localStorage.setItem('lnxnhat_locked', 'false');
+
+      // Reset sạch form nhập liệu
+      document.getElementById('g-name').value = "";
+      document.getElementById('g-birth').value = "";
+      document.getElementById('g-note').value = "";
+      clearSignatureCanvas();
+
+      // Chuyển qua màn hình danh sách và kích hoạt bộ đếm
+      previousHash = location.hash;
+      location.hash = '#/guest/home';
+    }
+
+    function handleAdminSubmit() {
+      const id = document.getElementById('ad-id').value;
+      const name = document.getElementById('ad-name').value.trim();
+      if (!name) { alert("Vui lòng điền tên mẫu!"); return; }
+      localDatabase.push({ id: id, name: name, birth: "", note: "Admin Temp", sig: "" });
+      document.getElementById('ad-name').value = "";
+      previousHash = location.hash;
+      location.hash = '#/ad/home';
+    }
+
+    // Tự động kiểm tra bộ đếm ngược ngay khi khởi động thiết bị
     window.onload = () => {
+      if (localStorage.getItem('lnxnhat_timer_end')) {
+        startLockCountdown();
+      }
       routerCore();
     };
   </script>
