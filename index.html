@@ -9,79 +9,39 @@
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet" />
 
   <style>
-    :root {
-      --black:       #000000;
-      --dark:        #050811;
-      --panel:       #0a1128;
-      --border:      #12357a;
-      --blue-glow:   #00f0ff;
-      --blue-accent: #0072ff;
-      --white:       #eaf2ff;
-      --dim:         #708cb6;
-      --success:     #00ff66;
-      --danger:      #ff0055;
-    }
-
+    :root { --black: #000000; --dark: #050811; --panel: #0a1128; --border: #12357a; --blue-glow: #00f0ff; --blue-accent: #0072ff; --white: #eaf2ff; --dim: #708cb6; --success: #00ff66; --danger: #ff0055; }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body { background: var(--black); color: var(--white); font-family: 'Exo 2', sans-serif; min-height: 100vh; overflow-x: hidden; }
-    
-    body::before {
-      content: ''; position: fixed; inset: 0;
-      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 240, 255, 0.02) 2px, rgba(0, 240, 255, 0.02) 4px);
-      pointer-events: none; z-index: 9999;
-    }
-
-    /* HEADER TINH GỌN XUỐNG GÓC TRÊN BÊN TRÁI */
+    body::before { content: ''; position: fixed; inset: 0; background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 240, 255, 0.02) 2px, rgba(0, 240, 255, 0.02) 4px); pointer-events: none; z-index: 9999; }
     header { text-align: left; padding: 15px 25px; border-bottom: 1px solid rgba(18, 53, 122, 0.3); background: rgba(5, 8, 17, 0.6); }
     .logo-main { font-family: 'Orbitron', sans-serif; font-size: 1.4rem; font-weight: 900; letter-spacing: 3px; display: inline-block; }
     .logo-main .part-1 { color: var(--blue-glow); text-shadow: 0 0 10px rgba(0, 240, 255, 0.5); }
     .logo-main .part-2 { color: var(--white); }
-
-    /* BANNER BÁO THỜI GIAN KHÓA WEB GUEST */
     .timer-banner { background: rgba(0, 240, 255, 0.05); border: 1px solid var(--blue-glow); color: var(--blue-glow); font-family: 'Orbitron', sans-serif; padding: 10px; text-align: center; border-radius: 6px; max-width: 300px; margin: 20px auto 10px auto; font-weight: bold; display: none; box-shadow: 0 0 12px rgba(0,240,255,0.2); letter-spacing: 1px; font-size: 0.9rem; }
-
     .view { display: none; padding: 20px; max-width: 1200px; margin: 0 auto; animation: scanline 0.3s ease-out; }
     .view.active { display: block; }
     @keyframes scanline { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: translateY(0); } }
-
     .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; margin-top: 20px; }
-    
     .sig-box { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; padding: 15px; position: relative; cursor: pointer; transition: all 0.2s; }
     .sig-box:hover { border-color: var(--blue-glow); box-shadow: 0 0 15px rgba(0,240,255,0.2); }
     .sig-box .name-tag { font-weight: 600; font-size: 0.95rem; color: var(--blue-glow); margin-bottom: 5px; border-bottom: 1px dashed var(--border); padding-bottom: 5px; }
     .sig-box .sub-info { font-size: 0.8rem; color: var(--dim); margin-bottom: 5px; }
     .sig-box img { width: 100%; height: 100px; background: #000; object-fit: contain; border-radius: 4px; margin-top: 5px; }
-    
     .add-box { background: rgba(0, 114, 255, 0.05); border: 2px dashed var(--border); border-radius: 8px; min-height: 165px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; }
     .add-box:hover { border-color: var(--blue-glow); background: rgba(0, 240, 255, 0.05); }
     .add-box .plus-icon { font-size: 3rem; color: var(--dim); transition: 0.2s; }
     .add-box:hover .plus-icon { color: var(--blue-glow); transform: scale(1.1); }
-
     .form-container { max-width: 600px; margin: 0 auto; background: var(--panel); border: 1px solid var(--border); padding: 25px; border-radius: 8px; }
     .form-group { margin-bottom: 18px; }
     .form-group label { display: block; font-size: 0.75rem; font-family: 'Orbitron'; color: var(--dim); margin-bottom: 6px; letter-spacing: 1px; }
-    .form-group input, .form-group textarea { width: 100%; background: #000; border: 1px solid var(--border); padding: 10px; color: #fff; border-radius: 4px; font-family: 'Exo 2'; }
-    .form-group input:focus, .form-group textarea:focus { border-color: var(--blue-glow); outline: none; }
+    .form-group input, .form-group textarea, .form-group select { width: 100%; background: #000; border: 1px solid var(--border); padding: 10px; color: #fff; border-radius: 4px; font-family: 'Exo 2'; }
+    .form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color: var(--blue-glow); outline: none; }
     .form-group input[type="date"] { color-scheme: dark; }
-    
-    /* KHU VỰC CHỮ KÝ */
     .canvas-area { position: relative; background: #000; border: 1px solid var(--border); border-radius: 4px; overflow: hidden; margin-top: 5px; }
     canvas { display: block; width: 100%; height: 180px; cursor: crosshair; touch-action: none; }
     .canvas-controls { position: absolute; top: 10px; right: 10px; display: flex; gap: 8px; z-index: 10; }
-    
     .clear-sig-btn { background: rgba(255,0,85,0.2); border: 1px solid var(--danger); color: var(--danger); padding: 4px 12px; border-radius: 4px; font-size: 0.75rem; cursor: pointer; font-weight: bold; letter-spacing: 1px; }
     .clear-sig-btn:hover { background: var(--danger); color: #fff; }
-    .fullscreen-btn { background: rgba(0, 240, 255, 0.15); border: 1px solid var(--blue-glow); color: var(--blue-glow); padding: 4px 12px; border-radius: 4px; font-size: 0.75rem; cursor: pointer; font-weight: bold; letter-spacing: 1px; }
-    .fullscreen-btn:hover { background: var(--blue-accent); color: #fff; }
-
-    /* MODAL CHỮ KÝ TOÀN MÀN HÌNH */
-    .fullscreen-modal { display: none; position: fixed; inset: 0; background: #000000; z-index: 10000; flex-direction: column; padding: 20px; }
-    .fullscreen-modal.active { display: flex; }
-    .fullscreen-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-family: 'Orbitron'; color: var(--blue-glow); font-size: 1rem; }
-    .fullscreen-canvas-wrapper { flex: 1; border: 2px dashed var(--border); background: #000; border-radius: 8px; overflow: hidden; position: relative; }
-    .fullscreen-canvas-wrapper canvas { width: 100%; height: 100%; }
-    .fullscreen-footer { display: flex; gap: 15px; margin-top: 15px; }
-
     .btn { padding: 10px 20px; font-family: 'Orbitron'; font-weight: bold; border-radius: 4px; cursor: pointer; border: none; font-size: 0.8rem; letter-spacing: 1px; text-transform: uppercase; }
     .btn-submit { background: var(--blue-accent); color: white; box-shadow: 0 4px 10px rgba(0,114,255,0.3); }
     .btn-submit:hover { background: #2687ff; }
@@ -89,9 +49,11 @@
     .btn-secondary:hover { border-color: var(--blue-glow); }
     .btn-danger { background: rgba(255, 0, 85, 0.1); color: var(--danger); border: 1px solid var(--danger); }
     .btn-danger:hover { background: var(--danger); color: white; }
-    
     .error-container { text-align: center; padding-top: 60px; color: var(--danger); }
     .error-code { font-family: 'Orbitron'; font-size: 5rem; font-weight: 900; text-shadow: 0 0 20px rgba(255,0,85,0.4); }
+    .tag-badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.7rem; font-weight: bold; color: #fff; text-shadow: 0px 0px 2px #000; margin-bottom: 5px; }
+    .filters-bar { display: flex; gap: 10px; margin-bottom: 20px; }
+    .filters-bar select { background: var(--dark); border: 1px solid var(--border); color: var(--white); padding: 8px; border-radius: 4px; font-family: 'Orbitron'; font-size: 0.8rem; flex: 1; }
   </style>
 </head>
 <body>
@@ -110,39 +72,23 @@
       <div class="error-container">
         <div class="error-code">403</div>
         <h2 style="font-family:'Orbitron'; font-size: 1.3rem;">ACCESS DENIED</h2>
-        <p style="margin-top:15px; color:var(--dim)">Mã liên kết không hợp lệ hoặc thời gian truy cập của thiết bị đã hết hạn.</p>
       </div>
     </div>
 
     <div id="view-guest-id-create" class="view">
       <div class="form-container">
-        <div class="form-group">
-          <label>Họ và Tên</label>
-          <input type="text" id="g-name" placeholder="Nhập tên của bạn..." />
-        </div>
-        <div class="form-group">
-          <label>Lớp</label>
-          <input type="text" id="g-class" placeholder="Ví dụ: 8/5" />
-        </div>
-        <div class="form-group">
-          <label>Ngày / Tháng / Năm sinh</label>
-          <input type="date" id="g-birth" />
-        </div>
-        <div class="form-group">
-          <label>Ghi chú</label>
-          <textarea id="g-note" rows="2" placeholder="Nhập ghi chú..."></textarea>
-        </div>
+        <div class="form-group"><label>Họ và Tên</label><input type="text" id="g-name" /></div>
+        <div class="form-group"><label>Lớp</label><input type="text" id="g-class" /></div>
+        <div class="form-group"><label>Ngày sinh</label><input type="date" id="g-birth" /></div>
+        <div class="form-group"><label>Ghi chú</label><textarea id="g-note" rows="2"></textarea></div>
         <div class="form-group">
           <label>Chữ ký</label>
           <div class="canvas-area">
-            <div class="canvas-controls">
-              <button class="fullscreen-btn" onclick="openFullscreenSignature('g-canvas')">TOÀN MÀN HÌNH</button>
-              <button class="clear-sig-btn" onclick="clearSignatureCanvas('g-canvas', event)">XÓA</button>
-            </div>
+            <div class="canvas-controls"><button class="clear-sig-btn" onclick="clearSignatureCanvas('g-canvas')">XÓA</button></div>
             <canvas id="g-canvas"></canvas>
           </div>
         </div>
-        <button class="btn btn-submit" style="width:100%" onclick="handleGuestSubmit()">HOÀN THÀNH & LƯU HỆ THỐNG</button>
+        <button class="btn btn-submit" style="width:100%" onclick="handleGuestSubmit()">HOÀN THÀNH</button>
       </div>
     </div>
 
@@ -150,45 +96,53 @@
       <div class="card-grid" id="guest-grid-container"></div>
     </div>
 
-    <div id="view-guest-id" class="view">
-      <div class="form-container" id="guest-detail-card"></div>
-    </div>
+    <div id="view-guest-id" class="view"><div class="form-container" id="guest-detail-card"></div></div>
 
     <div id="view-ad-home" class="view">
-      <h3 style="font-family:'Orbitron'; color:var(--blue-glow); text-align:center; margin-bottom:20px; font-size:1.1rem; letter-spacing:2px;">ADMIN CONTROL PANEL</h3>
+      <h3 style="font-family:'Orbitron'; color:var(--blue-glow); text-align:center; margin-bottom:20px;">ADMIN CONTROL PANEL</h3>
+      
+      <div class="filters-bar">
+        <select id="filter-class" onchange="renderGridContainer('ad-grid-container', true)">
+          <option value="ALL">-- Tất cả Lớp --</option>
+        </select>
+        <select id="filter-tag" onchange="renderGridContainer('ad-grid-container', true)">
+          <option value="ALL">-- Tất cả Mối quan hệ --</option>
+        </select>
+        <button class="btn btn-secondary" onclick="location.hash='#/aD/tags'">QUẢN LÝ TAGS</button>
+      </div>
+
       <div class="card-grid">
         <div class="add-box" onclick="navigateWithRules('#/aD/create')">
           <div class="plus-icon">+</div>
-          <div style="font-family:'Orbitron'; font-size:0.75rem; color:var(--dim); margin-top:5px">THÊM HỒ SƠ MỚI</div>
+          <div style="font-family:'Orbitron'; font-size:0.75rem; color:var(--dim); margin-top:5px">THÊM HỒ SƠ</div>
         </div>
         <div id="ad-grid-container" style="display:contents;"></div>
       </div>
     </div>
 
-    <div id="view-ad-id" class="view">
-      <div class="form-container" id="ad-detail-card"></div>
+    <div id="view-ad-tags" class="view">
+      <div class="form-container">
+        <h3 style="color:var(--blue-glow); margin-bottom:20px; text-align:center;">TẠO MỐI QUAN HỆ MỚI (TAG)</h3>
+        <div class="form-group"><label>Tên Tag</label><input type="text" id="tag-name" /></div>
+        <div class="form-group"><label>Màu Tag</label><input type="color" id="tag-color" style="height:40px; padding:2px;" /></div>
+        <div style="display:flex; gap:10px;">
+          <button class="btn btn-secondary" style="flex:1" onclick="location.hash='#/aD/home'">QUAY LẠI</button>
+          <button class="btn btn-submit" style="flex:2" onclick="handleCreateTag()">TẠO TAG</button>
+        </div>
+      </div>
     </div>
 
+    <div id="view-ad-id" class="view"><div class="form-container" id="ad-detail-card"></div></div>
+
     <div id="view-ad-edit" class="view">
-      <h3 style="font-family:'Orbitron'; color:var(--blue-glow); text-align:center; margin-bottom:20px; font-size:1.1rem;">CHỈNH SỬA HỒ SƠ MẪU</h3>
       <div class="form-container">
+        <h3 style="color:var(--blue-glow); margin-bottom:20px; text-align:center;">CHỈNH SỬA HỒ SƠ</h3>
         <input type="hidden" id="edit-id" />
-        <div class="form-group">
-          <label>Họ và Tên</label>
-          <input type="text" id="edit-name" />
-        </div>
-        <div class="form-group">
-          <label>Lớp</label>
-          <input type="text" id="edit-class" />
-        </div>
-        <div class="form-group">
-          <label>Ngày / Tháng / Năm sinh</label>
-          <input type="date" id="edit-birth" />
-        </div>
-        <div class="form-group">
-          <label>Ghi chú</label>
-          <textarea id="edit-note" rows="3"></textarea>
-        </div>
+        <div class="form-group"><label>Họ và Tên</label><input type="text" id="edit-name" /></div>
+        <div class="form-group"><label>Lớp</label><input type="text" id="edit-class" /></div>
+        <div class="form-group"><label>Ngày sinh</label><input type="date" id="edit-birth" /></div>
+        <div class="form-group"><label>Mối quan hệ (Tag)</label><select id="edit-relId"></select></div>
+        <div class="form-group"><label>Ghi chú</label><textarea id="edit-note" rows="3"></textarea></div>
         <div style="display:flex; gap:10px; margin-top:20px;">
           <button class="btn btn-secondary" style="flex:1" onclick="navigateWithRules('#/aD/home')">HỦY BỎ</button>
           <button class="btn btn-submit" style="flex:2" onclick="saveAdminEditChanges()">LƯU THAY ĐỔI</button>
@@ -197,301 +151,100 @@
     </div>
 
     <div id="view-ad-create" class="view">
-      <h3 style="font-family:'Orbitron'; color:var(--blue-glow); text-align:center; margin-bottom:20px; font-size:1.1rem;">ADMIN — TẠO HỒ SƠ MỚI</h3>
       <div class="form-container">
-        <div class="form-group">
-          <label>Họ và Tên</label>
-          <input type="text" id="ad-name" placeholder="Nhập họ và tên..." />
-        </div>
-        <div class="form-group">
-          <label>Lớp</label>
-          <input type="text" id="ad-class" placeholder="Ví dụ: 8/5" />
-        </div>
-        <div class="form-group">
-          <label>Ngày / Tháng / Năm sinh</label>
-          <input type="date" id="ad-birth" />
-        </div>
-        <div class="form-group">
-          <label>Ghi chú</label>
-          <textarea id="ad-note" rows="2" placeholder="Nhập ghi chú..."></textarea>
-        </div>
+        <h3 style="color:var(--blue-glow); margin-bottom:20px; text-align:center;">ADMIN — TẠO HỒ SƠ MỚI</h3>
+        <div class="form-group"><label>Họ và Tên</label><input type="text" id="ad-name" /></div>
+        <div class="form-group"><label>Lớp</label><input type="text" id="ad-class" /></div>
+        <div class="form-group"><label>Ngày sinh</label><input type="date" id="ad-birth" /></div>
+        <div class="form-group"><label>Mối quan hệ (Tag)</label><select id="ad-relId"></select></div>
+        <div class="form-group"><label>Ghi chú</label><textarea id="ad-note" rows="2"></textarea></div>
         <div class="form-group">
           <label>Chữ ký</label>
           <div class="canvas-area">
-            <div class="canvas-controls">
-              <button class="fullscreen-btn" onclick="openFullscreenSignature('ad-canvas')">TOÀN MÀN HÌNH</button>
-              <button class="clear-sig-btn" onclick="clearSignatureCanvas('ad-canvas', event)">XÓA</button>
-            </div>
+            <div class="canvas-controls"><button class="clear-sig-btn" onclick="clearSignatureCanvas('ad-canvas')">XÓA</button></div>
             <canvas id="ad-canvas"></canvas>
           </div>
         </div>
         <button class="btn btn-submit" style="width:100%" onclick="handleAdminSubmit()">XÁC NHẬN TẠO HỒ SƠ</button>
       </div>
     </div>
-
   </div>
 
-  <div id="signature-modal-view" class="fullscreen-modal">
-    <div class="fullscreen-header">
-      <span>CHẾ ĐỘ KÝ TOÀN MÀN HÌNH</span>
-      <span style="color: var(--dim); font-size: 0.8rem;">Xoay ngang màn hình để ký đẹp hơn</span>
-    </div>
-    <div class="fullscreen-canvas-wrapper">
-      <canvas id="fullscreen-signature-canvas"></canvas>
-    </div>
-    <div class="fullscreen-footer">
-      <button class="btn btn-secondary" onclick="closeFullscreenSignature(false)">HỦY</button>
-      <button class="btn btn-danger" onclick="clearFullscreenCanvas()">XÓA SẠCH</button>
-      <button class="btn btn-submit" style="flex: 1;" onclick="closeFullscreenSignature(true)">HOÀN THÀNH</button>
-    </div>
-  </div>
-
+  <script src="backup.js"></script>
   <script>
-    // Mảng lưu dữ liệu dự phòng mặc định ban đầu
-    const defaultDatabase = [
-      { id: "0001", name: "Nguyễn Văn A", class: "8/5", birth: "2012-05-20", note: "Học sinh lớp 8", sig: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKAAAABaCAYAAAA" },
-      { id: "0002", name: "Trần Thị B", class: "8/1", birth: "2012-09-12", note: "Thành viên ban sự kiện", sig: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKAAAABaCAYAAAA" }
-    ];
-
-    // Kiểm tra nạp dữ liệu từ bộ nhớ LocalStorage máy tính lên tránh lỗi ghi đè
-    let localDatabase = [];
-    const savedData = localStorage.getItem('lnxnhat_db_backup');
-    if (savedData) {
-      try { localDatabase = JSON.parse(savedData); } 
-      catch (e) { localDatabase = [...defaultDatabase]; }
-    } else {
-      localDatabase = [...defaultDatabase];
-      localStorage.setItem('lnxnhat_db_backup', JSON.stringify(localDatabase));
-    }
-
-    function saveToBackupStorage() {
-      localStorage.setItem('lnxnhat_db_backup', JSON.stringify(localDatabase));
-    }
-
     let globalTimerInterval = null;
-    let currentActiveSourceCanvasId = null; // Lưu trữ canvas gốc đang gọi Fullscreen
+    let canvases = {}, ctxs = {}, drawing = {};
 
-    function formatDateDisplay(dateString) {
-      if (!dateString) return 'Chưa cập nhật';
-      const parts = dateString.split('-');
-      if (parts.length !== 3) return dateString;
-      return `${parts[2]}/${parts[1]}/${parts[0]}`;
+    function getTagInfo(relId) {
+      if (!relId) return null;
+      return window.tagsDatabase.find(t => t.tagId === relId) || null;
     }
 
-    // --- BỘ ĐIỀU HƯỚNG ROUTER AN TOÀN ---
-    function navigateWithRules(targetHash) {
-      if (!targetHash.startsWith('#/')) targetHash = targetHash.replace('#', '#/');
-      const tar = targetHash.replace('#/', '').replace('#', '');
-
-      if (localStorage.getItem('lnxnhat_locked') === 'true' && (tar.startsWith('guest/home') || tar.startsWith('guest/id'))) {
-        location.hash = '#/error';
-        return;
-      }
-
-      if (tar === 'aD' || tar === 'aD/home') { location.hash = '#/aD/home'; return; }
-      if (tar.startsWith('aD/')) { location.hash = targetHash; return; }
-      if (tar === 'guest' || tar === '' || tar === 'guest/id/create') { location.hash = '#/guest/id/create'; return; }
-
-      if (tar === 'guest/home' || (tar.startsWith('guest/id') && !tar.endsWith('/create'))) {
-        if (localStorage.getItem('lnxnhat_timer_end') !== null && localStorage.getItem('lnxnhat_locked') !== 'true') {
-          location.hash = targetHash;
-        } else {
-          location.hash = '#/error';
-        }
-        return;
-      }
-      location.hash = '#/error';
-    }
-
-    window.addEventListener('hashchange', () => {
-      let hash = location.hash || '#/';
-      let cleanHash = hash.replace('#/', '').replace('#', '');
+    // Nạp danh sách Option cho Select Box Tag (Bộ lọc & Edit)
+    function populateTagDropdowns() {
+      const tagOpts = `<option value="">-- Không có --</option>` + 
+        window.tagsDatabase.map(t => `<option value="${t.tagId}">${t.tagName}</option>`).join('');
       
-      // SỬA LỖI CORE TRUY CẬP: Link trống hoặc link rễ tự động đẩy về form điền
-      if (cleanHash === '' || cleanHash === 'guest') { navigateWithRules('#/guest'); return; }
-      if (cleanHash === 'aD') { navigateWithRules('#/aD'); return; }
+      const filterOpts = `<option value="ALL">-- Tất cả Mối quan hệ --</option>` + tagOpts;
+      
+      if(document.getElementById('ad-relId')) document.getElementById('ad-relId').innerHTML = tagOpts;
+      if(document.getElementById('edit-relId')) document.getElementById('edit-relId').innerHTML = tagOpts;
+      if(document.getElementById('filter-tag')) document.getElementById('filter-tag').innerHTML = filterOpts;
 
-      if (localStorage.getItem('lnxnhat_locked') === 'true' && (cleanHash.startsWith('guest/home') || cleanHash.startsWith('guest/id?='))) {
-        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-        document.getElementById('view-error').classList.add('active');
-        document.getElementById('lock-timer-display').style.display = 'none';
-        return;
-      }
-
-      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-
-      if (cleanHash === 'guest/id/create') {
-        document.getElementById('view-guest-id-create').classList.add('active');
-        document.getElementById('lock-timer-display').style.display = 'none';
-        setTimeout(() => initSignatureCanvas('g-canvas'), 50);
-      }
-      else if (cleanHash === 'guest/home') {
-        renderGridContainer('guest-grid-container', false);
-        document.getElementById('view-guest-home').classList.add('active');
-        startLockCountdown();
-      }
-      else if (cleanHash.startsWith('guest/id') && !cleanHash.endsWith('/create')) {
-        const idParam = cleanHash.split('?=')[1];
-        extractDetailRecord(idParam, 'guest-detail-card', false);
-        document.getElementById('view-guest-id').classList.add('active');
-        startLockCountdown();
-      }
-      else if (cleanHash === 'aD/home') {
-        renderGridContainer('ad-grid-container', true);
-        document.getElementById('view-ad-home').classList.add('active');
-        document.getElementById('lock-timer-display').style.display = 'none';
-      }
-      else if (cleanHash.startsWith('aD/id')) {
-        const idParam = cleanHash.split('?=')[1];
-        extractDetailRecord(idParam, 'ad-detail-card', true);
-        document.getElementById('view-ad-id').classList.add('active');
-        document.getElementById('lock-timer-display').style.display = 'none';
-      }
-      else if (cleanHash.startsWith('aD/edit')) {
-        const idParam = cleanHash.split('?=')[1];
-        openAdminEditForm(idParam);
-        document.getElementById('view-ad-edit').classList.add('active');
-        document.getElementById('lock-timer-display').style.display = 'none';
-      }
-      else if (cleanHash === 'aD/create') {
-        document.getElementById('view-ad-create').classList.add('active');
-        document.getElementById('lock-timer-display').style.display = 'none';
-        setTimeout(() => initSignatureCanvas('ad-canvas'), 50);
-      }
-      else {
-        document.getElementById('view-error').classList.add('active');
-        document.getElementById('lock-timer-display').style.display = 'none';
-      }
-    });
-
-    // --- BỘ ĐẾM NGƯỢC THỜI GIAN THỰC ---
-    function startLockCountdown() {
-      if (globalTimerInterval) clearInterval(globalTimerInterval);
-      const timerEndStr = localStorage.getItem('lnxnhat_timer_end');
-      if (!timerEndStr) return;
-
-      const timerEnd = parseInt(timerEndStr, 10);
-      const displayBanner = document.getElementById('lock-timer-display');
-      const displaySpan = document.getElementById('timer-countdown');
-      displayBanner.style.display = 'block';
-
-      globalTimerInterval = setInterval(() => {
-        const now = Date.now();
-        const timeLeft = timerEnd - now;
-
-        if (timeLeft <= 0) {
-          clearInterval(globalTimerInterval);
-          localStorage.setItem('lnxnhat_locked', 'true');
-          displayBanner.style.display = 'none';
-          location.hash = '#/error';
-        } else {
-          const totalSeconds = Math.floor(timeLeft / 1000);
-          const minutes = Math.floor(totalSeconds / 60);
-          const seconds = totalSeconds % 60;
-          displaySpan.innerText = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-        }
-      }, 250);
+      // Nạp danh sách Lớp cho bộ lọc
+      const classes = [...new Set(window.localDatabase.map(i => i.class).filter(c => c))];
+      const classOpts = `<option value="ALL">-- Tất cả Lớp --</option>` + 
+        classes.map(c => `<option value="${c}">${c}</option>`).join('');
+      if(document.getElementById('filter-class')) document.getElementById('filter-class').innerHTML = classOpts;
     }
+
+    // Refresh giao diện được gọi từ backup.js
+    window.refreshUI = function() {
+      populateTagDropdowns();
+      if(location.hash.includes('aD/home')) renderGridContainer('ad-grid-container', true);
+      if(location.hash.includes('guest/home')) renderGridContainer('guest-grid-container', false);
+    };
 
     function renderGridContainer(containerId, isAdmin) {
       const container = document.getElementById(containerId);
       if (!container) return;
       container.innerHTML = "";
+
+      let dataToRender = window.localDatabase;
+
+      // Áp dụng bộ lọc cho Admin
+      if (isAdmin) {
+        const filterClass = document.getElementById('filter-class').value;
+        const filterTag = document.getElementById('filter-tag').value;
+        
+        if (filterClass !== "ALL") dataToRender = dataToRender.filter(i => i.class === filterClass);
+        if (filterTag !== "ALL") dataToRender = dataToRender.filter(i => i.relId === filterTag);
+      }
       
-      localDatabase.forEach(item => {
+      dataToRender.forEach(item => {
         const box = document.createElement('div');
         box.className = "sig-box";
-        box.onclick = () => {
-          navigateWithRules(isAdmin ? `#aD/id?=${item.id}` : `#guest/id?=${item.id}`);
-        };
+        box.onclick = () => navigateWithRules(isAdmin ? `#aD/id?=${item.id}` : `#guest/id?=${item.id}`);
+        
+        let tagHtml = "";
+        const tag = getTagInfo(item.relId);
+        if (tag) tagHtml = `<div class="tag-badge" style="background:${tag.tagColor}">${tag.tagName}</div>`;
+
         box.innerHTML = `
           <div class="name-tag">${item.name}</div>
-          <div class="sub-info">Lớp: ${item.class || 'N/A'}</div>
-          <div class="sub-info">Ngày sinh: ${formatDateDisplay(item.birth)}</div>
-          <img src="${item.sig.startsWith('data:') ? item.sig : 'data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'40\'><text x=\'10\' y=\'25\' fill=\'%23555\'>Chữ ký rỗng</text></svg>'}" />
+          ${tagHtml}
+          <div class="sub-info">ID: ${item.id} | Lớp: ${item.class || 'N/A'}</div>
+          <img src="${item.sig}" />
         `;
         container.appendChild(box);
       });
     }
 
-    function extractDetailRecord(idParam, containerId, isAdmin) {
-      const target = localDatabase.find(i => i.id === idParam);
-      const container = document.getElementById(containerId);
-      if (!container) return;
-      
-      if (!target) {
-        container.innerHTML = `<p style="color:var(--danger)">Hồ sơ không tồn tại.</p>`;
-        return;
-      }
-      
-      let actionButtons = `<button class="btn btn-secondary" style="flex:1" onclick="navigateWithRules('${isAdmin ? '#aD/home' : '#guest/home'}')">QUAY LẠI</button>`;
-      if (isAdmin) {
-        actionButtons += `
-          <button class="btn btn-submit" style="flex:1" onclick="location.hash='#/aD/edit?=${target.id}'">SỬA</button>
-          <button class="btn btn-danger" style="flex:1" onclick="deleteAdminRecord('${target.id}')">XÓA HỒ SƠ</button>
-        `;
-      }
-
-      container.innerHTML = `
-        <h3 style="color:var(--blue-glow); margin-bottom:15px; font-family:'Orbitron'; text-align:center; font-size:1.1rem;">CHI TIẾT HỒ SƠ</h3>
-        <p style="margin-bottom:10px;"><b>Họ tên:</b> ${target.name}</p>
-        <p style="margin-bottom:10px;"><b>Lớp:</b> ${target.class || 'Chưa rõ'}</p>
-        <p style="margin-bottom:10px;"><b>Ngày sinh:</b> ${formatDateDisplay(target.birth)}</p>
-        <p style="margin-bottom:15px;"><b>Ghi chú:</b> ${target.note || 'Trống'}</p>
-        <p style="margin-bottom:5px;"><b>Hình ảnh chữ ký:</b></p>
-        <div style="background:#000; padding:15px; border-radius:4px; border:1px solid var(--border)">
-          <img src="${target.sig}" style="max-width:100%; height:auto;" />
-        </div>
-        <div style="display:flex; gap:10px; margin-top:20px;">
-          ${actionButtons}
-        </div>
-      `;
-    }
-
-    function deleteAdminRecord(idParam) {
-      if (confirm("Bạn có chắc chắn muốn XÓA VĨNH VIỄN hồ sơ này không?")) {
-        localDatabase = localDatabase.filter(item => item.id !== idParam);
-        saveToBackupStorage();
-        alert("Đã xóa hộp thông tin hồ sơ thành công!");
-        location.hash = '#/aD/home';
-      }
-    }
-
-    function openAdminEditForm(idParam) {
-      const target = localDatabase.find(i => i.id === idParam);
-      if (!target) return;
-      document.getElementById('edit-id').value = target.id;
-      document.getElementById('edit-name').value = target.name;
-      document.getElementById('edit-class').value = target.class || '';
-      document.getElementById('edit-birth').value = target.birth || '';
-      document.getElementById('edit-note').value = target.note || '';
-    }
-
-    function saveAdminEditChanges() {
-      const id = document.getElementById('edit-id').value;
-      const target = localDatabase.find(i => i.id === id);
-      if (!target) return;
-
-      target.name = document.getElementById('edit-name').value.trim();
-      target.class = document.getElementById('edit-class').value.trim();
-      target.birth = document.getElementById('edit-birth').value;
-      target.note = document.getElementById('edit-note').value.trim();
-
-      if (!target.name) { alert("Vui lòng điền họ tên!"); return; }
-
-      saveToBackupStorage();
-      alert("Cập nhật thông tin hồ sơ thành công!");
-      location.hash = '#/aD/home';
-    }
-
-    // --- 🛠️ KHÓA CHẶT TRƯỢT MÀN HÌNH & KHỞI TẠO CANVAS ---
-    let canvases = {}, ctxs = {}, drawing = {};
-
+    // --- CANVAS XỬ LÝ CHỮ KÝ ---
     function initSignatureCanvas(canvasId) {
       const canvas = document.getElementById(canvasId); if (!canvas) return;
       const ctx = canvas.getContext('2d');
       canvases[canvasId] = canvas; ctxs[canvasId] = ctx; drawing[canvasId] = false;
-
       canvas.width = canvas.parentElement.clientWidth; canvas.height = 180;
       ctx.fillStyle = '#000000'; ctx.fillRect(0, 0, canvas.width, 180);
       ctx.strokeStyle = '#00ff66'; ctx.lineWidth = 3; ctx.lineCap = 'round';
@@ -502,181 +255,185 @@
         const clientY = e.clientY || (e.touches && e.touches[0] ? e.touches[0].clientY : 0);
         return { x: clientX - r.left, y: clientY - r.top };
       };
-
-      // Xử lý chuột (PC)
       canvas.onmousedown = (e) => { drawing[canvasId] = true; ctx.beginPath(); let p = getPos(e); ctx.moveTo(p.x, p.y); };
       canvas.onmousemove = (e) => { if(!drawing[canvasId]) return; let p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); };
       canvas.onmouseup = () => drawing[canvasId] = false;
-
-      // KHÓA TRƯỢT TRÊN MOBILE/IPAD: Ép cứng không cho trình duyệt cuộn trang khi vẽ
-      canvas.addEventListener('touchstart', (e) => {
-        e.preventDefault();
-        drawing[canvasId] = true; ctx.beginPath();
-        let p = getPos(e); ctx.moveTo(p.x, p.y);
-      }, { passive: false });
-
-      canvas.addEventListener('touchmove', (e) => {
-        e.preventDefault();
-        if(!drawing[canvasId]) return;
-        let p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke();
-      }, { passive: false });
-
+      canvas.addEventListener('touchstart', (e) => { e.preventDefault(); drawing[canvasId] = true; ctx.beginPath(); let p = getPos(e); ctx.moveTo(p.x, p.y); }, { passive: false });
+      canvas.addEventListener('touchmove', (e) => { e.preventDefault(); if(!drawing[canvasId]) return; let p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); }, { passive: false });
       canvas.addEventListener('touchend', () => { drawing[canvasId] = false; });
     }
     
-    function clearSignatureCanvas(canvasId, event) { 
-      if(event) event.stopPropagation();
+    function clearSignatureCanvas(canvasId) {
       const canvas = canvases[canvasId]; const ctx = ctxs[canvasId];
       if(ctx && canvas) { ctx.fillStyle = '#000000'; ctx.fillRect(0, 0, canvas.width, 180); } 
     }
 
-    // --- 📱 TÍNH NĂNG CHỮ KÝ TOÀN MÀN HÌNH (FULLSCREEN MODE) ---
-    let fsCanvas = document.getElementById('fullscreen-signature-canvas');
-    let fsCtx = fsCanvas.getContext('2d');
-    let fsDrawing = false;
-
-    function openFullscreenSignature(sourceCanvasId) {
-      currentActiveSourceCanvasId = sourceCanvasId;
-      const modal = document.getElementById('signature-modal-view');
-      modal.classList.add('active');
-
-      // Khớp kích thước canvas bằng kích thước thật của màn hình thiết bị
-      fsCanvas.width = fsCanvas.parentElement.clientWidth;
-      fsCanvas.height = fsCanvas.parentElement.clientHeight;
-      
-      fsCtx.fillStyle = '#000000';
-      fsCtx.fillRect(0, 0, fsCanvas.width, fsCanvas.height);
-      fsCtx.strokeStyle = '#00ff66';
-      fsCtx.lineWidth = 4; // Cho nét vẽ to rõ trên màn hình lớn
-      fsCtx.lineCap = 'round';
-
-      // Copy hình ảnh cũ đang có từ canvas nhỏ sang canvas lớn nếu có sẵn
-      const srcCanvas = document.getElementById(sourceCanvasId);
-      if (srcCanvas) {
-        fsCtx.drawImage(srcCanvas, 0, 0, fsCanvas.width, fsCanvas.height);
-      }
-
-      const getFsPos = (e) => {
-        const r = fsCanvas.getBoundingClientRect();
-        const clientX = e.clientX || (e.touches && e.touches[0] ? e.touches[0].clientX : 0);
-        const clientY = e.clientY || (e.touches && e.touches[0] ? e.touches[0].clientY : 0);
-        return { x: clientX - r.left, y: clientY - r.top };
+    // --- CÁC HÀM XỬ LÝ (CRUD) GỬI LÊN DRIVE ---
+    async function handleGuestSubmit() {
+      const payload = {
+        action: "ADD_RECORD",
+        id: generateID(5),
+        name: document.getElementById('g-name').value.trim(),
+        class: document.getElementById('g-class').value.trim(),
+        birth: document.getElementById('g-birth').value,
+        note: document.getElementById('g-note').value.trim(),
+        sig: canvases['g-canvas'] ? canvases['g-canvas'].toDataURL() : "",
+        status: "", relId: ""
       };
-
-      // Đăng ký bộ lắng nghe sự kiện chặn đứng hành vi trượt màn hình của iPad/Điện thoại hoàn toàn
-      fsCanvas.onmousedown = (e) => { fsDrawing = true; fsCtx.beginPath(); let p = getFsPos(e); fsCtx.moveTo(p.x, p.y); };
-      fsCanvas.onmousemove = (e) => { if(!fsDrawing) return; let p = getFsPos(e); fsCtx.lineTo(p.x, p.y); fsCtx.stroke(); };
-      fsCanvas.onmouseup = () => fsDrawing = false;
-
-      fsCanvas.addEventListener('touchstart', (e) => {
-        e.preventDefault();
-        fsDrawing = true; fsCtx.beginPath();
-        let p = getFsPos(e); fsCtx.moveTo(p.x, p.y);
-      }, { passive: false });
-
-      fsCanvas.addEventListener('touchmove', (e) => {
-        e.preventDefault();
-        if(!fsDrawing) return;
-        let p = getFsPos(e); fsCtx.lineTo(p.x, p.y); fsCtx.stroke();
-      }, { passive: false });
-
-      fsCanvas.addEventListener('touchend', () => { fsDrawing = false; });
-    }
-
-    function clearFullscreenCanvas() {
-      fsCtx.fillStyle = '#000000';
-      fsCtx.fillRect(0, 0, fsCanvas.width, fsCanvas.height);
-    }
-
-    function closeFullscreenSignature(shouldSave) {
-      if (shouldSave && currentActiveSourceCanvasId) {
-        const destCanvas = document.getElementById(currentActiveSourceCanvasId);
-        const destCtx = destCanvas.getContext('2d');
-        // Đồng bộ vẽ ngược dữ liệu chữ ký lớn từ Fullscreen về ô nhỏ trong form
-        destCtx.drawImage(fsCanvas, 0, 0, destCanvas.width, destCanvas.height);
-      }
-      document.getElementById('signature-modal-view').classList.remove('active');
-    }
-
-    // --- SUBMIT DỮ LIỆU GUEST VÀ KÍCH HOẠT KHÓA 1P30S ---
-    function handleGuestSubmit() {
-      let nextNum = localDatabase.length + 1;
-      let generatedId = String(nextNum).padStart(4, '0');
-
-      const name = document.getElementById('g-name').value.trim();
-      const cls = document.getElementById('g-class').value.trim();
-      const birth = document.getElementById('g-birth').value;
-      const canvas = canvases['g-canvas'];
-      const sigData = canvas ? canvas.toDataURL() : "";
-      const note = document.getElementById('g-note').value.trim();
-
-      if (!name) { alert("Vui lòng nhập họ tên!"); return; }
-
-      // Đồng bộ ngầm lên Google Form
-      const formUrl = "https://docs.google.com/forms/u/0/d/e/1FAIpQLSdN-r671XTq3CPWkldA1E_6u1IckFsG-_URc8YSUEHNKLKppg/formResponse";
-      const formData = new FormData();
-      formData.append("entry.804035975", generatedId);
-      formData.append("entry.1227843883", `${name} - Lớp: ${cls} (${birth})`);
-      formData.append("entry.919040770", sigData); 
-      fetch(formUrl, { method: "POST", body: formData, mode: "no-cors" }).catch(err => console.error(err));
-
-      localDatabase.push({ id: generatedId, name: name, class: cls, birth: birth, note: note, sig: sigData });
-      saveToBackupStorage();
-
-      alert("Xử lý hoàn thành! Hệ thống mở quyền xem danh sách trong 1 phút 30 giây.");
-
+      if (!payload.name) return alert("Vui lòng nhập họ tên!");
+      
+      await sendToDrive(payload);
+      
       const duration = 1 * 60 * 1000 + 30 * 1000; 
       localStorage.setItem('lnxnhat_timer_end', (Date.now() + duration).toString());
       localStorage.setItem('lnxnhat_locked', 'false');
-
-      document.getElementById('g-name').value = "";
-      document.getElementById('g-class').value = "";
-      document.getElementById('g-birth').value = "";
-      document.getElementById('g-note').value = "";
-      clearSignatureCanvas('g-canvas');
-
+      alert("Đã lưu. Mở quyền xem danh sách 1p30s.");
       location.hash = '#/guest/home';
     }
 
-    function handleAdminSubmit() {
-      let nextNum = localDatabase.length + 1;
-      let generatedId = String(nextNum).padStart(4, '0');
-
-      const name = document.getElementById('ad-name').value.trim();
-      const cls = document.getElementById('ad-class').value.trim();
-      const birth = document.getElementById('ad-birth').value;
-      const canvas = canvases['ad-canvas'];
-      const sigData = canvas ? canvas.toDataURL() : "";
-      const note = document.getElementById('ad-note').value.trim();
-
-      if (!name) { alert("Vui lòng điền họ tên!"); return; }
-
-      localDatabase.push({ id: generatedId, name: name, class: cls, birth: birth, note: note, sig: sigData });
-      saveToBackupStorage();
-
-      alert("Admin tạo hồ sơ thành công!");
-      
-      document.getElementById('ad-name').value = "";
-      document.getElementById('ad-class').value = "";
-      document.getElementById('ad-birth').value = "";
-      document.getElementById('ad-note').value = "";
-      clearSignatureCanvas('ad-canvas');
-
+    async function handleAdminSubmit() {
+      const payload = {
+        action: "ADD_RECORD",
+        id: generateID(5),
+        name: document.getElementById('ad-name').value.trim(),
+        class: document.getElementById('ad-class').value.trim(),
+        birth: document.getElementById('ad-birth').value,
+        note: document.getElementById('ad-note').value.trim(),
+        sig: canvases['ad-canvas'] ? canvases['ad-canvas'].toDataURL() : "",
+        relId: document.getElementById('ad-relId').value,
+        status: ""
+      };
+      if (!payload.name) return alert("Vui lòng điền họ tên!");
+      alert("Đang lưu lên hệ thống...");
+      await sendToDrive(payload);
       location.hash = '#/aD/home';
     }
 
-    window.onload = () => {
-      if (localStorage.getItem('lnxnhat_timer_end')) {
-        startLockCountdown();
-      }
+    async function saveAdminEditChanges() {
+      const id = document.getElementById('edit-id').value;
+      const originalRecord = window.localDatabase.find(i => i.id === id);
+      if(!originalRecord) return;
+
+      const payload = {
+        action: "ADD_RECORD", // Edit hoạt động bằng cách add Fix mới
+        id: id,
+        name: document.getElementById('edit-name').value.trim(),
+        class: document.getElementById('edit-class').value.trim(),
+        birth: document.getElementById('edit-birth').value,
+        note: document.getElementById('edit-note').value.trim(),
+        relId: document.getElementById('edit-relId').value,
+        sig: originalRecord.sig, 
+        status: "fix" // Backend GS sẽ tự thêm số max+1
+      };
       
-      let initialHash = (location.hash || '#/').replace('#/', '').replace('#', '');
-      if (initialHash === 'aD') {
+      alert("Đang cập nhật phiên bản Fix...");
+      await sendToDrive(payload);
+      location.hash = '#/aD/home';
+    }
+
+    async function deleteAdminRecord(idParam) {
+      if (confirm("Chuyển trạng thái hồ sơ sang Remove?")) {
+        const payload = { action: "ADD_RECORD", id: idParam, status: "remove", name: "", class: "", birth: "", note: "", sig: "", relId: "" };
+        alert("Đang xóa (đánh dấu remove)...");
+        await sendToDrive(payload);
         location.hash = '#/aD/home';
-      } else {
-        window.dispatchEvent(new HashChangeEvent('hashchange'));
       }
-    };
+    }
+
+    async function handleCreateTag() {
+      const payload = {
+        action: "ADD_TAG",
+        tagId: generateID(3),
+        tagName: document.getElementById('tag-name').value.trim(),
+        tagColor: document.getElementById('tag-color').value
+      };
+      if(!payload.tagName) return alert("Nhập tên Tag!");
+      alert("Đang tạo Tag...");
+      await sendToDrive(payload);
+      location.hash = '#/aD/home';
+    }
+
+    // --- BỘ ĐIỀU HƯỚNG ROUTER AN TOÀN (Giữ nguyên luật cũ) ---
+    function navigateWithRules(targetHash) {
+      if (!targetHash.startsWith('#/')) targetHash = targetHash.replace('#', '#/');
+      const tar = targetHash.replace('#/', '').replace('#', '');
+      if (localStorage.getItem('lnxnhat_locked') === 'true' && (tar.startsWith('guest/home') || tar.startsWith('guest/id'))) return location.hash = '#/error';
+      if (tar === 'aD' || tar === 'aD/home') return location.hash = '#/aD/home';
+      if (tar.startsWith('aD/')) return location.hash = targetHash;
+      if (tar === 'guest' || tar === '' || tar === 'guest/id/create') return location.hash = '#/guest/id/create';
+      if (tar === 'guest/home' || (tar.startsWith('guest/id') && !tar.endsWith('/create'))) {
+        return (localStorage.getItem('lnxnhat_timer_end') !== null && localStorage.getItem('lnxnhat_locked') !== 'true') ? location.hash = targetHash : location.hash = '#/error';
+      }
+      location.hash = '#/error';
+    }
+
+    window.addEventListener('hashchange', () => {
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+      let hash = location.hash || '#/'; let cleanHash = hash.replace('#/', '').replace('#', '');
+      
+      if (cleanHash === 'guest/id/create') {
+        document.getElementById('view-guest-id-create').classList.add('active');
+        setTimeout(() => initSignatureCanvas('g-canvas'), 50);
+      } else if (cleanHash === 'guest/home') {
+        window.refreshUI(); document.getElementById('view-guest-home').classList.add('active'); startLockCountdown();
+      } else if (cleanHash.startsWith('guest/id') && !cleanHash.endsWith('/create')) {
+        extractDetailRecord(cleanHash.split('?=')[1], 'guest-detail-card', false);
+        document.getElementById('view-guest-id').classList.add('active'); startLockCountdown();
+      } else if (cleanHash === 'aD/home') {
+        window.refreshUI(); document.getElementById('view-ad-home').classList.add('active');
+      } else if (cleanHash === 'aD/tags') {
+        document.getElementById('view-ad-tags').classList.add('active');
+      } else if (cleanHash.startsWith('aD/id')) {
+        extractDetailRecord(cleanHash.split('?=')[1], 'ad-detail-card', true); document.getElementById('view-ad-id').classList.add('active');
+      } else if (cleanHash.startsWith('aD/edit')) {
+        openAdminEditForm(cleanHash.split('?=')[1]); document.getElementById('view-ad-edit').classList.add('active');
+      } else if (cleanHash === 'aD/create') {
+        populateTagDropdowns(); document.getElementById('view-ad-create').classList.add('active'); setTimeout(() => initSignatureCanvas('ad-canvas'), 50);
+      } else {
+        document.getElementById('view-error').classList.add('active');
+      }
+    });
+
+    function extractDetailRecord(idParam, containerId, isAdmin) {
+      const target = window.localDatabase.find(i => i.id === idParam);
+      const container = document.getElementById(containerId);
+      if (!target) return container.innerHTML = `<p style="color:var(--danger)">Hồ sơ không tồn tại.</p>`;
+      
+      let actionButtons = `<button class="btn btn-secondary" style="flex:1" onclick="navigateWithRules('${isAdmin ? '#aD/home' : '#guest/home'}')">QUAY LẠI</button>`;
+      if (isAdmin) actionButtons += `<button class="btn btn-submit" style="flex:1" onclick="location.hash='#/aD/edit?=${target.id}'">SỬA</button><button class="btn btn-danger" style="flex:1" onclick="deleteAdminRecord('${target.id}')">XÓA</button>`;
+
+      container.innerHTML = `
+        <h3 style="color:var(--blue-glow); margin-bottom:15px; font-family:'Orbitron'; text-align:center;">CHI TIẾT HỒ SƠ (${target.id})</h3>
+        <p><b>Họ tên:</b> ${target.name}</p><p><b>Lớp:</b> ${target.class}</p><p><b>Ngày sinh:</b> ${target.birth}</p>
+        <p><b>Ghi chú:</b> ${target.note}</p><p><b>Phiên bản:</b> ${target.status || 'Gốc'}</p>
+        <img src="${target.sig}" style="max-width:100%; border:1px solid #333; margin-top:10px;"/>
+        <div style="display:flex; gap:10px; margin-top:20px;">${actionButtons}</div>
+      `;
+    }
+
+    function openAdminEditForm(idParam) {
+      const target = window.localDatabase.find(i => i.id === idParam);
+      populateTagDropdowns();
+      document.getElementById('edit-id').value = target.id;
+      document.getElementById('edit-name').value = target.name;
+      document.getElementById('edit-class').value = target.class;
+      document.getElementById('edit-birth').value = target.birth;
+      document.getElementById('edit-relId').value = target.relId || "";
+      document.getElementById('edit-note').value = target.note;
+    }
+
+    function startLockCountdown() {
+      if (globalTimerInterval) clearInterval(globalTimerInterval);
+      const timerEnd = parseInt(localStorage.getItem('lnxnhat_timer_end') || 0);
+      const displayBanner = document.getElementById('lock-timer-display');
+      displayBanner.style.display = 'block';
+      globalTimerInterval = setInterval(() => {
+        const timeLeft = timerEnd - Date.now();
+        if (timeLeft <= 0) { clearInterval(globalTimerInterval); localStorage.setItem('lnxnhat_locked', 'true'); location.hash = '#/error'; }
+        else displayBanner.querySelector('span').innerText = `${String(Math.floor(timeLeft / 60000)).padStart(2,'0')}:${String(Math.floor((timeLeft/1000)%60)).padStart(2,'0')}`;
+      }, 250);
+    }
+    window.onload = () => window.dispatchEvent(new HashChangeEvent('hashchange'));
   </script>
 </body>
 </html>
