@@ -1,11 +1,11 @@
 /**
- * LNXNhat System — Core Backup Engine (v4.0 - Matrix Sync & Versioning)
+ * LNXNhat System — Core Backup Engine (v5.0 - CORS Fixed & Versioning)
  */
 const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwT5PnRJoDg4gMKMcKWIUu3JS0cLus-DR33zk2sB6-L743BTWVu-fMxgUMs9IylUwnW/exec";
 
-if (typeof window.localDatabase === 'undefined') window.localDatabase = [];
-if (typeof window.rawDatabase === 'undefined') window.rawDatabase = [];
-if (typeof window.tagsDatabase === 'undefined') window.tagsDatabase = [];
+window.localDatabase = [];
+window.rawDatabase = [];
+window.tagsDatabase = [];
 
 // 1. Tạo ID ngẫu nhiên (5 ký tự cho User, 3 ký tự cho Tag)
 function generateID(length) {
@@ -18,7 +18,6 @@ function generateID(length) {
         for (let i = 0; i < length; i++) {
             result += chars.charAt(Math.floor(Math.random() * chars.length));
         }
-        // Kiểm tra không được trùng với bất kỳ ID nào trong DB gốc (kể cả file đã bị remove)
         if (length === 5) {
             isDuplicate = window.rawDatabase.some(r => r.id === result);
         } else if (length === 3) {
@@ -87,9 +86,8 @@ function processRawData(rawRecords) {
 
 // 4. Đồng bộ từ Sheets về
 async function syncFromDrive() {
-    if (!WEB_APP_URL || WEB_APP_URL === "ĐIỀN_URL_APPS_SCRIPT_CỦA_BẠN_VÀO_ĐÂY") return;
+    if (!WEB_APP_URL || WEB_APP_URL.includes("ĐIỀN_URL")) return;
     try {
-        console.log("Đang gửi:", payload);
         const res = await fetch(WEB_APP_URL + "?action=getData");
         const data = await res.json();
         
@@ -97,7 +95,7 @@ async function syncFromDrive() {
             id: r[0], name: r[1], class: r[2], birth: r[3], note: r[4], sig: r[5], status: r[6] || "", relId: r[7] || ""
         }));
         window.tagsDatabase = data.tags.slice(1).map(r => ({
-            tagId: r[0], tagName: r[1], tagColor: r[2]
+            tagName: r[0], tagId: r[1], tagColor: r[2]
         }));
 
         window.localDatabase = processRawData(window.rawDatabase);
@@ -112,23 +110,28 @@ async function syncFromDrive() {
     }
 }
 
-// 5. Gửi dữ liệu lên Sheets
-async function sendToDrive(payload) {
+// 5. Gửi dữ liệu lên Sheets (ĐÃ FIX CORS Ở ĐÂY)
+async function sendToDrive(payloadToSend) {
     // Đẩy ngay vào Local để UI phản hồi tức thì
-    if (payload.action === "ADD_RECORD") {
-         window.rawDatabase.push(payload);
+    if (payloadToSend.action === "ADD_RECORD") {
+         window.rawDatabase.push(payloadToSend);
          window.localDatabase = processRawData(window.rawDatabase);
-    } else if (payload.action === "ADD_TAG") {
-         window.tagsDatabase.push(payload);
+    } else if (payloadToSend.action === "ADD_TAG") {
+         window.tagsDatabase.push(payloadToSend);
     }
     if (typeof window.refreshUI === 'function') window.refreshUI();
 
     try {
         await fetch(WEB_APP_URL, {
             method: "POST",
-            body: JSON.stringify(payload)
+            headers: {
+                // BẮT BUỘC PHẢI LÀ TEXT/PLAIN ĐỂ VƯỢT QUA CORS CỦA GOOGLE
+                "Content-Type": "text/plain;charset=utf-8" 
+            },
+            body: JSON.stringify(payloadToSend)
         });
-        setTimeout(syncFromDrive, 1000); 
+        // Sau khi gửi xong, tải lại dữ liệu mới nhất
+        setTimeout(syncFromDrive, 1500); 
     } catch (e) {
         console.error("Lỗi Sync Drive:", e);
     }
