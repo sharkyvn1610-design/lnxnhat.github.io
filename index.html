@@ -31,7 +31,7 @@
       pointer-events: none; z-index: 9999;
     }
 
-    /* HEADER TINH GỌN: THU NHỎ XUỐNG GÓC TRÊN BÊN TRÁI */
+    /* HEADER TINH GỌN XUỐNG GÓC TRÊN BÊN TRÁI */
     header { text-align: left; padding: 15px 25px; border-bottom: 1px solid rgba(18, 53, 122, 0.3); background: rgba(5, 8, 17, 0.6); }
     .logo-main { font-family: 'Orbitron', sans-serif; font-size: 1.4rem; font-weight: 900; letter-spacing: 3px; display: inline-block; }
     .logo-main .part-1 { color: var(--blue-glow); text-shadow: 0 0 10px rgba(0, 240, 255, 0.5); }
@@ -49,8 +49,8 @@
     .sig-box { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; padding: 15px; position: relative; cursor: pointer; transition: all 0.2s; }
     .sig-box:hover { border-color: var(--blue-glow); box-shadow: 0 0 15px rgba(0,240,255,0.2); }
     .sig-box .name-tag { font-weight: 600; font-size: 0.95rem; color: var(--blue-glow); margin-bottom: 5px; border-bottom: 1px dashed var(--border); padding-bottom: 5px; }
-    .sig-box .sub-info { font-size: 0.8rem; color: var(--dim); margin-bottom: 10px; }
-    .sig-box img { width: 100%; height: 100px; background: #000; object-fit: contain; border-radius: 4px; }
+    .sig-box .sub-info { font-size: 0.8rem; color: var(--dim); margin-bottom: 5px; }
+    .sig-box img { width: 100%; height: 100px; background: #000; object-fit: contain; border-radius: 4px; margin-top: 5px; }
     
     .add-box { background: rgba(0, 114, 255, 0.05); border: 2px dashed var(--border); border-radius: 8px; min-height: 165px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; }
     .add-box:hover { border-color: var(--blue-glow); background: rgba(0, 240, 255, 0.05); }
@@ -62,18 +62,20 @@
     .form-group label { display: block; font-size: 0.75rem; font-family: 'Orbitron'; color: var(--dim); margin-bottom: 6px; letter-spacing: 1px; }
     .form-group input, .form-group textarea { width: 100%; background: #000; border: 1px solid var(--border); padding: 10px; color: #fff; border-radius: 4px; font-family: 'Exo 2'; }
     .form-group input:focus, .form-group textarea:focus { border-color: var(--blue-glow); outline: none; }
-    .form-group input[type="date"] { color-scheme: dark; } /* Đồng bộ màu lịch chọn trên giao diện tối */
+    .form-group input[type="date"] { color-scheme: dark; }
     
     .canvas-area { position: relative; background: #000; border: 1px solid var(--border); border-radius: 4px; overflow: hidden; margin-top: 5px; }
     canvas { display: block; width: 100%; height: 180px; cursor: crosshair; }
     .clear-sig-btn { position: absolute; top: 10px; right: 10px; background: rgba(255,0,85,0.2); border: 1px solid var(--danger); color: var(--danger); padding: 4px 12px; border-radius: 4px; font-size: 0.75rem; cursor: pointer; font-weight: bold; z-index: 10; letter-spacing: 1px; }
     .clear-sig-btn:hover { background: var(--danger); color: #fff; }
 
-    .btn { padding: 10px 20px; font-family: 'Orbitron'; font-weight: bold; border-radius: 4px; cursor: pointer; border: none; font-size: 0.8rem; letter-spacing: 1px; }
+    .btn { padding: 10px 20px; font-family: 'Orbitron'; font-weight: bold; border-radius: 4px; cursor: pointer; border: none; font-size: 0.8rem; letter-spacing: 1px; text-transform: uppercase; }
     .btn-submit { background: var(--blue-accent); color: white; box-shadow: 0 4px 10px rgba(0,114,255,0.3); }
     .btn-submit:hover { background: #2687ff; }
     .btn-secondary { background: #1c2638; color: var(--white); border: 1px solid var(--border); }
     .btn-secondary:hover { border-color: var(--blue-glow); }
+    .btn-danger { background: rgba(255, 0, 85, 0.1); color: var(--danger); border: 1px solid var(--danger); }
+    .btn-danger:hover { background: var(--danger); color: white; }
     
     .error-container { text-align: center; padding-top: 60px; color: var(--danger); }
     .error-code { font-family: 'Orbitron'; font-size: 5rem; font-weight: 900; text-shadow: 0 0 20px rgba(255,0,85,0.4); }
@@ -104,6 +106,10 @@
         <div class="form-group">
           <label>Họ và Tên</label>
           <input type="text" id="g-name" placeholder="Nhập tên của bạn..." />
+        </div>
+        <div class="form-group">
+          <label>Lớp</label>
+          <input type="text" id="g-class" placeholder="Ví dụ: 8/5" />
         </div>
         <div class="form-group">
           <label>Ngày / Tháng / Năm sinh</label>
@@ -156,6 +162,10 @@
           <input type="text" id="edit-name" />
         </div>
         <div class="form-group">
+          <label>Lớp</label>
+          <input type="text" id="edit-class" />
+        </div>
+        <div class="form-group">
           <label>Ngày / Tháng / Năm sinh</label>
           <input type="date" id="edit-birth" />
         </div>
@@ -176,6 +186,10 @@
         <div class="form-group">
           <label>Họ và Tên</label>
           <input type="text" id="ad-name" placeholder="Nhập họ và tên..." />
+        </div>
+        <div class="form-group">
+          <label>Lớp</label>
+          <input type="text" id="ad-class" placeholder="Ví dụ: 8/5" />
         </div>
         <div class="form-group">
           <label>Ngày / Tháng / Năm sinh</label>
@@ -199,13 +213,13 @@
   </div>
 
   <script>
-    // --- KHỞI TẠO VÀ BACKUP JAVASCRIPT (SỬ DỤNG LOCALSTORAGE ĐỂ LƯU TRỮ VĨNH VIỄN) ---
+    // Dữ liệu gốc dự phòng ban đầu
     let defaultDatabase = [
-      { id: "0001", name: "Nguyễn Văn A", birth: "2010-05-20", note: "Học sinh lớp 8", sig: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKAAAABaCAYAAAA" },
-      { id: "0002", name: "Trần Thị B", birth: "2011-09-12", note: "Thành viên ban sự kiện", sig: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKAAAABaCAYAAAA" }
+      { id: "0001", name: "Nguyễn Văn A", class: "8/5", birth: "2012-05-20", note: "Học sinh lớp 8", sig: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKAAAABaCAYAAAA" },
+      { id: "0002", name: "Trần Thị B", class: "8/1", birth: "2012-09-12", note: "Thành viên ban sự kiện", sig: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKAAAABaCAYAAAA" }
     ];
 
-    // Nạp dữ liệu sao lưu từ bộ nhớ máy tính lên, nếu không có mới dùng mảng mặc định trên
+    // Bộ nhớ đệm Backup bằng JavaScript localStorage
     let localDatabase = JSON.parse(localStorage.getItem('lnxnhat_db_backup')) || defaultDatabase;
 
     function saveToBackupStorage() {
@@ -214,7 +228,6 @@
 
     let globalTimerInterval = null;
 
-    // Định dạng ngày hiển thị dd/mm/yyyy cho đẹp mắt
     function formatDateDisplay(dateString) {
       if (!dateString) return 'Chưa cập nhật';
       const parts = dateString.split('-');
@@ -222,12 +235,9 @@
       return `${parts[2]}/${parts[1]}/${parts[0]}`;
     }
 
-    // --- BỘ ĐIỀU HƯỚNG ROUTER PHÂN QUYỀN CHÌA KHÓA ---
+    // --- BỘ ĐIỀU HƯỚNG ROUTER BẢO MẬT ---
     function navigateWithRules(targetHash) {
-      if (!targetHash.startsWith('#/')) {
-        targetHash = targetHash.replace('#', '#/');
-      }
-      
+      if (!targetHash.startsWith('#/')) targetHash = targetHash.replace('#', '#/');
       const tar = targetHash.replace('#/', '').replace('#', '');
 
       if (localStorage.getItem('lnxnhat_locked') === 'true' && (tar.startsWith('guest/home') || tar.startsWith('guest/id'))) {
@@ -311,7 +321,7 @@
       }
     });
 
-    // --- BỘ ĐẾM NGƯỢC THỜI GIAN THỰC (LOCK REALTIME) ---
+    // --- BỘ ĐẾM NGƯỢC THỜI GIAN THỰC ---
     function startLockCountdown() {
       if (globalTimerInterval) clearInterval(globalTimerInterval);
       const timerEndStr = localStorage.getItem('lnxnhat_timer_end');
@@ -354,6 +364,7 @@
         
         box.innerHTML = `
           <div class="name-tag">${item.name}</div>
+          <div class="sub-info">Lớp: ${item.class || 'N/A'}</div>
           <div class="sub-info">Ngày sinh: ${formatDateDisplay(item.birth)}</div>
           <img src="${item.sig.startsWith('data:') ? item.sig : 'data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'40\'><text x=\'10\' y=\'25\' fill=\'%23555\'>Chữ ký rỗng</text></svg>'}" />
         `;
@@ -374,16 +385,19 @@
       let actionButtons = `<button class="btn btn-secondary" style="flex:1" onclick="navigateWithRules('${isAdmin ? '#aD/home' : '#guest/home'}')">QUAY LẠI</button>`;
       
       if (isAdmin) {
-        // Nếu là Admin, chèn thêm nút Chỉnh sửa mục dữ liệu mẫu
-        actionButtons += `<button class="btn btn-submit" style="flex:1" onclick="location.hash='#/aD/edit?=${target.id}'">CHỈNH SỬA HỒ SƠ</button>`;
+        actionButtons += `
+          <button class="btn btn-submit" style="flex:1" onclick="location.hash='#/aD/edit?=${target.id}'">SỬA</button>
+          <button class="btn btn-danger" style="flex:1" onclick="deleteAdminRecord('${target.id}')">XÓA HỒ SƠ</button>
+        `;
       }
 
       container.innerHTML = `
         <h3 style="color:var(--blue-glow); margin-bottom:15px; font-family:'Orbitron'; text-align:center; font-size:1.1rem;">CHI TIẾT HỒ SƠ</h3>
-        <p style="margin-bottom:10px;"><b>Họ tên nhân sự:</b> ${target.name}</p>
+        <p style="margin-bottom:10px;"><b>Họ tên:</b> ${target.name}</p>
+        <p style="margin-bottom:10px;"><b>Lớp:</b> ${target.class || 'Chưa rõ'}</p>
         <p style="margin-bottom:10px;"><b>Ngày sinh:</b> ${formatDateDisplay(target.birth)}</p>
-        <p style="margin-bottom:15px;"><b>Ghi chú nội bộ:</b> ${target.note || 'Trống'}</p>
-        <p style="margin-bottom:5px;"><b>Hình ảnh chữ ký xác thực:</b></p>
+        <p style="margin-bottom:15px;"><b>Ghi chú:</b> ${target.note || 'Trống'}</p>
+        <p style="margin-bottom:5px;"><b>Hình ảnh chữ ký:</b></p>
         <div style="background:#000; padding:15px; border-radius:4px; border:1px solid var(--border)">
           <img src="${target.sig}" style="max-width:100%; height:auto;" />
         </div>
@@ -393,34 +407,44 @@
       `;
     }
 
-    // --- HÀM MỞ FORM EDIT VÀ ĐIỀN DỮ LIỆU CŨ BÊN AD ---
+    // --- TÍNH NĂNG XÓA HỒ SƠ BÊN AD VÀ CẬP NHẬT BACKUP ---
+    function deleteAdminRecord(idParam) {
+      if (confirm("Bạn có chắc chắn muốn XÓA VĨNH VIỄN hồ sơ này khỏi hệ thống không?")) {
+        localDatabase = localDatabase.filter(item => item.id !== idParam);
+        saveToBackupStorage(); // Sao lưu lại mảng dữ liệu mới sau khi xóa
+        alert("Đã xóa hộp thông tin hồ sơ thành công!");
+        location.hash = '#/aD/home';
+      }
+    }
+
     function openAdminEditForm(idParam) {
       const target = localDatabase.find(i => i.id === idParam);
       if (!target) return;
       document.getElementById('edit-id').value = target.id;
       document.getElementById('edit-name').value = target.name;
+      document.getElementById('edit-class').value = target.class || '';
       document.getElementById('edit-birth').value = target.birth || '';
       document.getElementById('edit-note').value = target.note || '';
     }
 
-    // Lưu đè các chỉnh sửa của Admin vào database và cập nhật Backup
     function saveAdminEditChanges() {
       const id = document.getElementById('edit-id').value;
       const target = localDatabase.find(i => i.id === id);
       if (!target) return;
 
       target.name = document.getElementById('edit-name').value.trim();
+      target.class = document.getElementById('edit-class').value.trim();
       target.birth = document.getElementById('edit-birth').value;
       target.note = document.getElementById('edit-note').value.trim();
 
       if (!target.name) { alert("Vui lòng điền họ tên!"); return; }
 
-      saveToBackupStorage(); // Chạy sao lưu backup dữ liệu tự động
+      saveToBackupStorage();
       alert("Cập nhật thông tin hồ sơ thành công!");
       location.hash = '#/aD/home';
     }
 
-    // --- ĐIỀU KHIỂN CANVA CHỮ KÝ ---
+    // --- CANVAS CHỮ KÝ ---
     let canvases = {}, ctxs = {}, drawing = {};
     function initSignatureCanvas(canvasId) {
       const canvas = document.getElementById(canvasId); if (!canvas) return;
@@ -449,12 +473,13 @@
       if(ctx && canvas) { ctx.fillStyle = '#000000'; ctx.fillRect(0, 0, canvas.width, 180); } 
     }
 
-    // --- GỬI DỮ LIỆU GUEST VÀ KÍCH HOẠT KHÓA 1P30S ---
+    // --- SUBMIT DỮ LIỆU ---
     function handleGuestSubmit() {
       let nextNum = localDatabase.length + 1;
       let generatedId = String(nextNum).padStart(4, '0');
 
       const name = document.getElementById('g-name').value.trim();
+      const cls = document.getElementById('g-class').value.trim();
       const birth = document.getElementById('g-birth').value;
       const note = document.getElementById('g-note').value.trim();
       const canvas = canvases['g-canvas'];
@@ -462,16 +487,16 @@
 
       if (!name) { alert("Vui lòng nhập họ tên!"); return; }
 
-      // Bắn data lên Google Form ngầm qua api
+      // Gửi Google Form ngầm
       const formUrl = "https://docs.google.com/forms/u/0/d/e/1FAIpQLSdN-r671XTq3CPWkldA1E_6u1IckFsG-_URc8YSUEHNKLKppg/formResponse";
       const formData = new FormData();
       formData.append("entry.804035975", generatedId);
-      formData.append("entry.1227843883", name + " (" + birth + ")");
+      formData.append("entry.1227843883", `${name} - Lớp: ${cls} (${birth})`);
       formData.append("entry.919040770", sigData); 
       fetch(formUrl, { method: "POST", body: formData, mode: "no-cors" }).catch(err => console.error(err));
 
-      localDatabase.push({ id: generatedId, name: name, birth: birth, note: note, sig: sigData });
-      saveToBackupStorage(); // SAU LƯU BACKUP
+      localDatabase.push({ id: generatedId, name: name, class: cls, birth: birth, note: note, sig: sigData });
+      saveToBackupStorage();
 
       alert("Xử lý hoàn thành! Hệ thống mở quyền xem danh sách trong 1 phút 30 giây.");
 
@@ -480,6 +505,7 @@
       localStorage.setItem('lnxnhat_locked', 'false');
 
       document.getElementById('g-name').value = "";
+      document.getElementById('g-class').value = "";
       document.getElementById('g-birth').value = "";
       document.getElementById('g-note').value = "";
       clearSignatureCanvas('g-canvas');
@@ -487,25 +513,26 @@
       location.hash = '#/guest/home';
     }
 
-    // --- QUY TRÌNH TẠO MỚI BÊN ADMIN (ĐỒNG BỘ Y CHANG FORM GUEST) ---
     function handleAdminSubmit() {
       let nextNum = localDatabase.length + 1;
       let generatedId = String(nextNum).padStart(4, '0');
 
       const name = document.getElementById('ad-name').value.trim();
+      const cls = document.getElementById('ad-class').value.trim();
       const birth = document.getElementById('ad-birth').value;
       const note = document.getElementById('ad-note').value.trim();
       const canvas = canvases['ad-canvas'];
       const sigData = canvas ? canvas.toDataURL() : "";
 
-      if (!name) { alert("Vui lòng điền họ tên nhân sự!"); return; }
+      if (!name) { alert("Vui lòng điền họ tên!"); return; }
 
-      localDatabase.push({ id: generatedId, name: name, birth: birth, note: note, sig: sigData });
-      saveToBackupStorage(); // SAO LƯU BACKUP
+      localDatabase.push({ id: generatedId, name: name, class: cls, birth: birth, note: note, sig: sigData });
+      saveToBackupStorage();
 
       alert("Admin tạo hồ sơ thành công!");
       
       document.getElementById('ad-name').value = "";
+      document.getElementById('ad-class').value = "";
       document.getElementById('ad-birth').value = "";
       document.getElementById('ad-note').value = "";
       clearSignatureCanvas('ad-canvas');
@@ -513,7 +540,6 @@
       location.hash = '#/aD/home';
     }
 
-    // Tự động kiểm tra trạng thái khi tải trang
     window.onload = () => {
       if (localStorage.getItem('lnxnhat_timer_end')) {
         startLockCountdown();
