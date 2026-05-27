@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LNXNhat System — Google Drive Data Injection</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --black:       #000000;
+      --dark:        #080c14;
+      --panel:       #0a0f1e;
+      --border:      #0d2a5e;
+      --blue-dark:   #0a1f5c;
+      --blue-mid:    #1a3a8f;
+      --blue-accent: #1e6fff;
+      --blue-glow:   #4d9fff;
+      --white:       #e8f0ff;
+      --dim:         #6080b0;
+      --success:     #00e676;
+      --danger:      #ff1744;
+      --warn:        #ffc400;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; background: var(--black); color: var(--white); font-family: 'Exo 2', sans-serif; font-weight: 300; overflow-x: hidden; }
+
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,30,80,.03) 2px, rgba(0,30,80,.03) 4px);
+      pointer-events: none; z-index: 9999;
+    }
+
+    #app { min-height: 100vh; }
+    .page { display: none; min-height: 100vh; padding: 20px; animation: fadeIn .3s ease; }
+    .page.active { display: block; }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
+
+    /* NAVBAR */
+    .navbar {
+      display: flex; align-items: center; justify-content: space-between; padding: 12px 24px;
+      border-bottom: 1px solid var(--border); background: var(--panel); position: sticky; top: 0; z-index: 100;
+    }
+    .navbar .logo { font-family: 'Orbitron', monospace; font-size: 1.1rem; font-weight: 900; color: var(--blue-accent); letter-spacing: 3px; text-shadow: 0 0 12px rgba(30,111,255,.5); }
+    .navbar .clock { font-family: 'Share Tech Mono', monospace; font-size: .8rem; color: var(--dim); }
+    .navbar .clock span { color: var(--blue-glow); }
+
+    .page-title {
+      font-family: 'Orbitron', monospace; font-size: 1.4rem; font-weight: 700; color: var(--blue-accent);
+      letter-spacing: 2px; margin: 28px 0 24px; text-align: center; text-shadow: 0 0 16px rgba(30,111,255,.4);
+    }
+    .page-title::after { content: ''; display: block; width: 80px; height: 2px; background: linear-gradient(90deg, transparent, var(--blue-accent), transparent); margin: 8px auto 0; }
+
+    /* FORM CARD */
+    .form-card { max-width: 700px; margin: 0 auto; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 32px; box-shadow: 0 0 40px rgba(10,31,92,.6), inset 0 1px 0 rgba(30,111,255,.1); }
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; font-size: .75rem; font-weight: 600; letter-spacing: 1.5px; color: var(--dim); text-transform: uppercase; margin-bottom: 8px; }
+    .form-group input, .form-group textarea, .form-group select { width: 100%; background: var(--blue-dark); border: 1px solid var(--blue-mid); border-radius: 4px; color: var(--white); font-family: 'Exo 2', sans-serif; font-size: .95rem; padding: 10px 14px; outline: none; }
+    .form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color: var(--blue-accent); box-shadow: 0 0 0 3px rgba(30,111,255,.2); }
+    
+    /* BUTTONS */
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 22px; border: 1px solid var(--blue-mid); border-radius: 4px; background: var(--blue-dark); color: var(--white); font-family: 'Exo 2', sans-serif; font-size: .9rem; font-weight: 600; cursor: pointer; transition: all .2s; }
+    .btn:hover { background: var(--blue-mid); border-color: var(--blue-accent); box-shadow: 0 0 12px rgba(30,111,255,.4); }
+    .btn.primary { background: var(--blue-mid); border-color: var(--blue-accent); }
+    .btn.danger { border-color: var(--danger); color: var(--danger); }
+    .btn.success { border-color: var(--success); color: var(--success); }
+    .btn-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 24px; }
+
+    /* CANVAS */
+    .canvas-wrapper { margin-top: 8px; border: 1px solid var(--blue-mid); border-radius: 4px; overflow: hidden; background: #000; position: relative; }
+    .canvas-wrapper canvas { display: block; width: 100% !important; height: 220px !important; cursor: crosshair; touch-action: none; }
+    .canvas-tools { display: flex; gap: 8px; padding: 8px; background: var(--panel); border-top: 1px solid var(--border); }
+    
+    /* CHẾ ĐỘ THAO TÁC */
+    .action-selector { display: flex; gap: 10px; margin-bottom: 20px; }
+    .action-btn { flex: 1; padding: 12px; border: 1px solid var(--border); background: var(--dark); color: var(--dim); border-radius: 6px; cursor: pointer; font-family: 'Orbitron', sans-serif; font-weight: bold; font-size: 0.85rem; text-align: center; transition: all 0.2s; }
+    .action-btn.active[data-action="save"] { background: rgba(0, 230, 118, 0.1); border-color: var(--success); color: var(--success); }
+    .action-btn.active[data-action="delete"] { background: rgba(255, 23, 68, 0.1); border-color: var(--danger); color: var(--danger); }
+
+    .toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); padding: 10px 22px; border-radius: 4px; font-size: .85rem; font-weight: 600; z-index: 999; animation: toastIn .3s ease; }
+    .toast.success { background: rgba(0,230,118,.15); border: 1px solid var(--success); color: var(--success); }
+    .toast.error   { background: rgba(255,23,68,.15);  border: 1px solid var(--danger);  color: var(--danger); }
+    @keyframes toastIn { from { opacity:0; transform: translateX(-50%) translateY(10px); } to { opacity:1; transform: translateX(-50%) translateY(0); } }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="logo">LNX<span style="color:var(--white)">NHAT</span></div>
+  <div style="display: flex; gap: 10px; align-items: center;">
+    <button class="btn success" onclick="generateRandomID()" style="padding: 6px 12px; font-size: 0.8rem; font-family: 'Orbitron'; font-weight: bold;">ADD +</button>
+    <div class="clock">UTC+7 &nbsp;<span id="clock-display">--:--:--</span></div>
+  </div>
+</nav>
+
+<div id="app">
+  <div class="page active" id="page-home">
+    <h1 class="page-title">HỆ THỐNG ĐỒNG BỘ GOOGLE DRIVE</h1>
+    
+    <div class="form-card">
+      <div class="action-selector">
+        <div class="action-btn active" data-action="save" onclick="setAction('save')">📝 NHẬP / SỬA HỒ SƠ</div>
+        <div class="action-btn" data-action="delete" onclick="setAction('delete')">🗑 XÓA HỒ SƠ</div>
+      </div>
+
+      <div class="form-group">
+        <label>Mã hồ sơ ID (4 chữ số) *</label>
+        <input type="text" id="f-id" maxlength="4" placeholder="Ví dụ: 0001" style="font-family: 'Share Tech Mono'; font-size: 1.2rem; color: var(--blue-glow);" />
+      </div>
+
+      <div id="input-fields-container">
+        <div class="form-group">
+          <label>Họ và Tên *</label>
+          <input type="text" id="f-hoten" placeholder="Nguyễn Văn A" />
+        </div>
+        <div class="form-group">
+          <label>Ngày Sinh *</label>
+          <input type="date" id="f-sinh" />
+        </div>
+        <div class="form-group">
+          <label>Lớp / Đơn vị *</label>
+          <input type="text" id="f-lop" placeholder="12A1" />
+        </div>
+        <div class="form-group">
+          <label>Ghi Chú</label>
+          <textarea id="f-ghichu" placeholder="Thông tin bổ sung..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Chữ Ký (Nét vẽ mượt)</label>
+          <div class="canvas-wrapper"><canvas id="sig-canvas"></canvas></div>
+          <div class="canvas-tools">
+            <button class="btn" onclick="clearCanvas()">🗑 Xóa chữ ký</button>
+          </div>
+        </div>
+      </div>
+
+      <div style="height: 1px; background: var(--border); margin: 24px 0;"></div>
+      <div class="btn-row">
+        <button class="btn primary" id="submit-main-btn" onclick="submitData()">💾 Thực thi Hệ thống</button>
+        <button class="btn" onclick="resetForm()">↺ Nhập Lại</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ĐƯỜNG DẪN ĐƯỜNG ỐNG ĐẨY FORM THEO LINK PHẢN HỒI CHÍNH THỨC CỦA BẠN
+const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdN-r671XTq3CPwKldA1E_6ulIckFsG-_URc8YSUEHNKLKppg/formResponse";
+
+// KHỚP CHÍNH XÁC CÁC MÃ SỐ ENTRY TỪ HÌNH BẠN CHỤP 
+const FORM_ENTRIES = {
+  action:      "entry.804035975",   // Chế độ: SAVE hoặc REMOVE
+  id:          "entry.1227843883",  // ID 4 số
+  name:        "entry.919904770",   // Họ và Tên
+  class:       "entry.1459808481",  // Lớp
+  birth_year:  "entry.1167072711_year",
+  birth_month: "entry.1167072711_month",
+  birth_day:   "entry.1167072711_day",
+  note:        "" // Nếu form của bạn không có ô text ghi chú/ảnh riêng, dữ liệu phụ sẽ gộp chung hoặc bỏ trống.
+};
+
+let currentAction = "save"; 
+
+function setAction(action) {
+  currentAction = action;
+  document.querySelectorAll('.action-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.action-btn[data-action="${action}"]`).classList.add('active');
+  
+  const container = document.getElementById('input-fields-container');
+  const mainBtn = document.getElementById('submit-main-btn');
+  
+  if (action === 'delete') {
+    container.style.display = 'none';
+    mainBtn.className = 'btn danger';
+    mainBtn.textContent = '🗑 Xác nhận Yêu cầu Xóa';
+  } else {
+    container.style.display = 'block';
+    mainBtn.className = 'btn primary';
+    mainBtn.textContent = '💾 Lưu & Cập Nhật Hồ Sơ';
+  }
+}
+
+function generateRandomID() {
+  let r = ""; for(let i=0; i<4; i++) r += Math.floor(Math.random()*10);
+  document.getElementById('f-id').value = r;
+  showToast("🎲 Đã tạo ngẫu nhiên ID: " + r, "success");
+}
+
+let sigCanvas, sigCtx, drawing = false;
+function initCanvas() {
+  sigCanvas = document.getElementById('sig-canvas'); if (!sigCanvas) return;
+  sigCanvas.width = 600; sigCanvas.height = 250;
+  sigCtx = sigCanvas.getContext('2d');
+  sigCtx.fillStyle = '#000000'; sigCtx.fillRect(0, 0, 600, 250);
+  sigCtx.strokeStyle = '#ffffff'; sigCtx.lineWidth = 4; sigCtx.lineCap = 'round';
+
+  const getPos = (e) => {
+    const r = sigCanvas.getBoundingClientRect();
+    const t = e.touches ? e.touches[0] : e;
+    return { x: (t.clientX - r.left) * (600 / r.width), y: (t.clientY - r.top) * (250 / r.height) };
+  };
+  sigCanvas.addEventListener('mousedown', e => { drawing = true; sigCtx.beginPath(); const p = getPos(e); sigCtx.moveTo(p.x, p.y); });
+  sigCanvas.addEventListener('mousemove', e => { if (!drawing) return; const p = getPos(e); sigCtx.lineTo(p.x, p.y); sigCtx.stroke(); });
+  sigCanvas.addEventListener('mouseup', () => drawing = false);
+  sigCanvas.addEventListener('touchstart', e => { e.preventDefault(); drawing = true; sigCtx.beginPath(); const p = getPos(e); sigCtx.moveTo(p.x, p.y); });
+  sigCanvas.addEventListener('touchmove', e => { if (!drawing) return; const p = getPos(e); sigCtx.lineTo(p.x, p.y); sigCtx.stroke(); });
+  sigCanvas.addEventListener('touchend', () => drawing = false);
+}
+
+function clearCanvas() { if (sigCtx) { sigCtx.fillStyle = '#000000'; sigCtx.fillRect(0, 0, 600, 250); } }
+
+function resetForm() {
+  ['f-id','f-hoten','f-sinh','f-lop','f-ghichu'].forEach(id => { const el = document.getElementById(id); if(el) el.value=''; });
+  clearCanvas(); setAction('save');
+}
+
+async function submitData() {
+  const id = document.getElementById('f-id').value.trim();
+  if (!id || id.length !== 4) { showToast("❌ ID phải điền đủ 4 chữ số!", "error"); return; }
+
+  const formData = new URLSearchParams();
+  formData.append(FORM_ENTRIES.id, id);
+
+  if (currentAction === "delete") {
+    formData.append(FORM_ENTRIES.action, "REMOVE");
+    formData.append(FORM_ENTRIES.name, "N/A");
+    formData.append(FORM_ENTRIES.class, "N/A");
+  } else {
+    const name = document.getElementById('f-hoten').value.trim();
+    const birthVal = document.getElementById('f-sinh').value; // YYYY-MM-DD
+    const uClass = document.getElementById('f-lop').value.trim();
+    const note = document.getElementById('f-ghichu').value.trim();
+    const image = sigCanvas.toDataURL('image/jpeg', 0.7);
+
+    if (!name || !birthVal || !uClass) { showToast("❌ Cần điền đầy đủ thông tin (*)", "error"); return; }
+    
+    const parts = birthVal.split('-'); // [YYYY, MM, DD]
+    
+    formData.append(FORM_ENTRIES.action, "SAVE - Note: " + note + " | Sig: " + image.substring(0, 100) + "...");
+    formData.append(FORM_ENTRIES.name, name);
+    formData.append(FORM_ENTRIES.class, uClass);
+    formData.append(FORM_ENTRIES.birth_year, parts[0]);
+    formData.append(FORM_ENTRIES.birth_month, parts[1]);
+    formData.append(FORM_ENTRIES.birth_day, parts[2]);
+  }
+
+  showToast("⏳ Đang đẩy lệnh lên Google Drive...", "success");
+
+  fetch(GOOGLE_FORM_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: formData.toString(),
+    mode: 'no-cors'
+  }).then(() => {
+    showToast("🚀 Đã hoàn tất thực thi lệnh!", "success");
+    resetForm();
+  }).catch(err => {
+    showToast("❌ Lỗi đường truyền mạng", "error");
+  });
+}
+
+setInterval(() => {
+  const d = new Date();
+  document.getElementById('clock-display').textContent = d.toLocaleTimeString('vi-VN');
+}, 1000);
+
+document.addEventListener('DOMContentLoaded', initCanvas);
+</script>
+</body>
+</html>
