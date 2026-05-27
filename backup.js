@@ -1,7 +1,7 @@
 /**
  * LNXNhat System — Core Backup Engine (v5.0 - CORS Fixed & Versioning)
  */
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwT5PnRJoDg4gMKMcKWIUu3JS0cLus-DR33zk2sB6-L743BTWVu-fMxgUMs9IylUwnW/exec";
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzcPOiRWgzvGWzG_N7EHwxE9LkgxmE3p3FP4Bou521cWrKhEvw794XaS_IAGYDzaoHw/exec";
 
 window.localDatabase = [];
 window.rawDatabase = [];
