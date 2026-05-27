@@ -1,7 +1,7 @@
 /**
  * LNXNhat System — Core Backup Engine (v4.0 - Matrix Sync & Versioning)
  */
-const WEB_APP_URL = "ĐIỀN_URL_APPS_SCRIPT_CỦA_BẠN_VÀO_ĐÂY";
+const WEB_APP_URL = "AKfycbwT5PnRJoDg4gMKMcKWIUu3JS0cLus-DR33zk2sB6-L743BTWVu-fMxgUMs9IylUwnW";
 
 if (typeof window.localDatabase === 'undefined') window.localDatabase = [];
 if (typeof window.rawDatabase === 'undefined') window.rawDatabase = [];
