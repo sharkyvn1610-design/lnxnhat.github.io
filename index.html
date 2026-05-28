@@ -197,6 +197,7 @@
   </div>
 
   <script src="backup.js"></script>
+  <!-- backup.js phải được load TRƯỚC script inline bên dưới -->
   <script>
     let globalTimerInterval = null;
     let canvases = {}, ctxs = {}, drawing = {};
@@ -335,16 +336,21 @@
       const originalRecord = window.localDatabase.find(i => i.id === currentId);
       if(!originalRecord) return;
       
+      // Tính số fix tiếp theo để versioning đúng (fix1 → fix2 → fix3...)
+      const nextFix = typeof window.getNextFixNumber === 'function'
+        ? window.getNextFixNumber(currentId)
+        : 1;
+
       const payload = {
         action: "ADD_RECORD", 
         id: currentId, 
-        name: document.getElementById('edit-name').value.trim(),
+        name:  document.getElementById('edit-name').value.trim(),
         class: document.getElementById('edit-class').value.trim(), 
         birth: document.getElementById('edit-birth').value,
-        note: document.getElementById('edit-note').value.trim(), 
+        note:  document.getElementById('edit-note').value.trim(), 
         relId: document.getElementById('edit-relId').value,
-        sig: originalRecord.sig, 
-        status: "fix"
+        sig:   originalRecord.sig,   // Giữ nguyên link ảnh gốc, không upload lại
+        status: "fix" + nextFix      // fix1, fix2, fix3...
       };
       await sendToDrive(payload);
       location.hash = '#/aD/home';
