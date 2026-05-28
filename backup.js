@@ -2,7 +2,7 @@
 //  backup.js — Storage & Sync Engine  |  LNXNhat System v3
 //  Thay YOUR_WEB_APP_URL bằng link deploy của bạn:
 // ============================================================
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxsLlv0jKYRMrP0YSqQyAyVRhDdue7w0AkyJqFwZmz_s6dgL2ccHbFzjIaT6Dm0WDVq/exec";
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbws_2ZwBOouGnLd0FxGDi6f0bUsNrV_YcB1Y8fjp_eu_RMJGfJDxoD7wkJI4ApoX456/exec";
 
 window.localDatabase = [];
 window.rawDatabase   = [];
