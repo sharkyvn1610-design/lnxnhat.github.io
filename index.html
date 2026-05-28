@@ -202,12 +202,17 @@
     let canvases = {}, ctxs = {}, drawing = {};
     let activeCanvasSrc = null;
 
-    function getTagInfo(relId) { return window.tagsDatabase.find(t => t.tagId === relId) || null; }
+    function getTagInfo(relId) { 
+      return window.tagsDatabase.find(t => t.tagId === relId) || null; 
+    }
 
     function populateTagDropdowns() {
-      // Đoạn này sẽ gây lỗi Cannot read properties of undefined (reading 'map') nếu tagsDatabase chưa có dữ liệu
+      if(!window.tagsDatabase) window.tagsDatabase = [];
+      if(!window.localDatabase) window.localDatabase = [];
+      
       const tagOpts = `<option value="">-- Không có --</option>` + window.tagsDatabase.map(t => `<option value="${t.tagId}">${t.tagName}</option>`).join('');
-      const filterOpts = `<option value="ALL">-- Tất cả Mối quan hệ --</option>` + tagOpts;
+      const filterOpts = `<option value="ALL">-- Tất cả Mối quan hệ --</option>` + window.tagsDatabase.map(t => `<option value="${t.tagId}">${t.tagName}</option>`).join('');
+      
       if(document.getElementById('ad-relId')) document.getElementById('ad-relId').innerHTML = tagOpts;
       if(document.getElementById('edit-relId')) document.getElementById('edit-relId').innerHTML = tagOpts;
       if(document.getElementById('filter-tag')) document.getElementById('filter-tag').innerHTML = filterOpts;
@@ -227,7 +232,7 @@
       const container = document.getElementById(containerId);
       if (!container) return;
       container.innerHTML = "";
-      let dataToRender = window.localDatabase;
+      let dataToRender = window.localDatabase || [];
 
       if (isAdmin) {
         const filterClass = document.getElementById('filter-class').value;
@@ -249,7 +254,7 @@
           <div class="name-tag">${item.name}</div>
           ${tagHtml}
           <div class="sub-info">ID: ${item.id} | Lớp: ${item.class || 'N/A'}</div>
-          <img src="${item.sig}" />
+          <img src="${item.sig || ''}" />
         `;
         container.appendChild(box);
       });
@@ -309,6 +314,7 @@
       await sendToDrive(payload);
       localStorage.setItem('lnxnhat_timer_end', (Date.now() + 90000).toString());
       localStorage.setItem('lnxnhat_locked', 'false');
+      sessionStorage.setItem('guest_completed', 'true');
       location.hash = '#/guest/home';
     }
 
@@ -359,48 +365,6 @@
       location.hash = '#/aD/home';
     }
 
-    window.addEventListener('hashchange', () => {
-      let originalHash = location.hash || '#/';
-      let cleanHash = originalHash.replace('#/', '').replace('#', '');
-      
-      if (originalHash === '#/guest') { location.hash = '#/guest/id/create'; return; }
-      if (originalHash === '#/aD') { location.hash = '#/aD/home'; return; }
-      if (originalHash.toLowerCase().startsWith('#/ad') && !originalHash.startsWith('#/aD')) {
-        location.hash = '#/error'; return;
-      }
-      if (!cleanHash.startsWith('guest') && !cleanHash.startsWith('aD') && cleanHash !== 'error') {
-        location.hash = '#/error'; return;
-      }
-      if (cleanHash.startsWith('guest/home') || (cleanHash.startsWith('guest/id') && !cleanHash.endsWith('/create'))) {
-          if (localStorage.getItem('lnxnhat_locked') === 'true' || !localStorage.getItem('lnxnhat_timer_end')) {
-              location.hash = '#/error'; return;
-          }
-      }
-
-      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-      document.getElementById('lock-timer-display').style.display = cleanHash.startsWith('guest/home') || (cleanHash.startsWith('guest/id') && !cleanHash.endsWith('/create')) ? 'block' : 'none';
-
-      if (cleanHash === 'guest/id/create') {
-        document.getElementById('view-guest-id-create').classList.add('active'); setTimeout(() => initSignatureCanvas('g-canvas'), 50);
-      } else if (cleanHash === 'guest/home') {
-        window.refreshUI(); document.getElementById('view-guest-home').classList.add('active'); startLockCountdown();
-      } else if (cleanHash.startsWith('guest/id') && !cleanHash.endsWith('/create')) {
-        extractDetailRecord(cleanHash.split('?=')[1], 'guest-detail-card', false); document.getElementById('view-guest-id').classList.add('active'); startLockCountdown();
-      } else if (cleanHash === 'aD/home') {
-        window.refreshUI(); document.getElementById('view-ad-home').classList.add('active');
-      } else if (cleanHash === 'aD/tags') {
-        document.getElementById('view-ad-tags').classList.add('active');
-      } else if (cleanHash.startsWith('aD/id')) {
-        extractDetailRecord(cleanHash.split('?=')[1], 'ad-detail-card', true); document.getElementById('view-ad-id').classList.add('active');
-      } else if (cleanHash.startsWith('aD/edit')) {
-        openAdminEditForm(cleanHash.split('?=')[1]); document.getElementById('view-ad-edit').classList.add('active');
-      } else if (cleanHash === 'aD/create') {
-        populateTagDropdowns(); document.getElementById('view-ad-create').classList.add('active'); setTimeout(() => initSignatureCanvas('ad-canvas'), 50);
-      } else {
-        document.getElementById('view-error').classList.add('active');
-      }
-    });
-
     function extractDetailRecord(idParam, containerId, isAdmin) {
       const target = window.localDatabase.find(i => i.id === idParam);
       const container = document.getElementById(containerId);
@@ -417,13 +381,14 @@
         <p><b>Họ tên:</b> ${target.name}</p><p><b>Lớp:</b> ${target.class}</p><p><b>Ngày sinh:</b> ${target.birth}</p>
         ${tagHtml}
         <p><b>Ghi chú:</b> ${target.note}</p><p><b>Phiên bản:</b> ${target.status || 'Gốc'}</p>
-        <img src="${target.sig}" style="max-width:100%; border:1px solid #333; margin-top:10px; border-radius:4px;"/>
+        <img src="${target.sig || ''}" style="max-width:100%; border:1px solid #333; margin-top:10px; border-radius:4px;"/>
         <div style="display:flex; gap:10px; margin-top:20px;">${actionBtns}</div>
       `;
     }
 
     function openAdminEditForm(idParam) {
       const t = window.localDatabase.find(i => i.id === idParam);
+      if(!t) return;
       populateTagDropdowns();
       document.getElementById('edit-id').value = t.id; 
       document.getElementById('edit-name').value = t.name;
@@ -438,11 +403,108 @@
       const timerEnd = parseInt(localStorage.getItem('lnxnhat_timer_end') || 0);
       globalTimerInterval = setInterval(() => {
         const timeLeft = timerEnd - Date.now();
-        if (timeLeft <= 0) { clearInterval(globalTimerInterval); localStorage.setItem('lnxnhat_locked', 'true'); location.hash = '#/error'; }
-        else document.getElementById('timer-countdown').innerText = `${String(Math.floor(timeLeft / 60000)).padStart(2,'0')}:${String(Math.floor((timeLeft/1000)%60)).padStart(2,'0')}`;
+        if (timeLeft <= 0) { 
+          clearInterval(globalTimerInterval); 
+          localStorage.setItem('lnxnhat_locked', 'true'); 
+          location.hash = '#/error'; 
+        }
+        else {
+          document.getElementById('timer-countdown').innerText = `${String(Math.floor(timeLeft / 60000)).padStart(2,'0')}:${String(Math.floor((timeLeft/1000)%60)).padStart(2,'0')}`;
+        }
       }, 250);
     }
-    window.onload = () => window.dispatchEvent(new HashChangeEvent('hashchange'));
+
+    // ==========================================
+    // CƠ CHẾ ROUTER BẢO MẬT CHẶN TRUY CẬP THẲNG
+    // ==========================================
+    window.addEventListener('hashchange', () => {
+      let originalHash = location.hash || '#/';
+      let cleanHash = originalHash.replace('#/', '').replace('#', '');
+      
+      // 1. Nếu cố tình gõ chính xác #/guest -> Cấp quyền hợp lệ & Chuyển vào trang Tạo
+      if (originalHash === '#/guest') {
+          sessionStorage.setItem('gate_guest_passed', 'true');
+          location.hash = '#/guest/id/create';
+          return;
+      }
+      
+      // 2. Nếu cố tình gõ chính xác #/aD -> Cấp quyền hợp lệ & Chuyển vào trang Home Admin
+      if (originalHash === '#/aD') {
+          sessionStorage.setItem('gate_admin_passed', 'true');
+          location.hash = '#/aD/home';
+          return;
+      }
+
+      // 3. Kiểm tra cổng bảo vệ Guest
+      if (cleanHash.startsWith('guest/id/create')) {
+          if (sessionStorage.getItem('gate_guest_passed') !== 'true') {
+              location.hash = '#/error'; return;
+          }
+      }
+
+      // 4. Kiểm tra cổng bảo vệ Admin
+      if (cleanHash.startsWith('aD')) {
+          if (sessionStorage.getItem('gate_admin_passed') !== 'true') {
+              location.hash = '#/error'; return;
+          }
+      }
+
+      // 5. Chặn bảo vệ trang Home của Guest (Phải điền form xong mới được xem danh sách)
+      if (cleanHash.startsWith('guest/home') || (cleanHash.startsWith('guest/id') && !cleanHash.endsWith('/create'))) {
+          if (localStorage.getItem('lnxnhat_locked') === 'true' || !localStorage.getItem('lnxnhat_timer_end') || sessionStorage.getItem('guest_completed') !== 'true') {
+              location.hash = '#/error'; return;
+          }
+      }
+
+      // Ẩn toàn bộ view trước khi active view mới
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+      document.getElementById('lock-timer-display').style.display = cleanHash.startsWith('guest/home') || (cleanHash.startsWith('guest/id') && !cleanHash.endsWith('/create')) ? 'block' : 'none';
+
+      // Kích hoạt Giao diện tương ứng với URL Route
+      if (cleanHash === 'guest/id/create') {
+        document.getElementById('view-guest-id-create').classList.add('active'); 
+        setTimeout(() => initSignatureCanvas('g-canvas'), 50);
+      } else if (cleanHash === 'guest/home') {
+        window.refreshUI(); 
+        document.getElementById('view-guest-home').classList.add('active'); 
+        startLockCountdown();
+      } else if (cleanHash.startsWith('guest/id') && !cleanHash.endsWith('/create')) {
+        extractDetailRecord(originalHash.split('?=')[1], 'guest-detail-card', false); 
+        document.getElementById('view-guest-id').classList.add('active'); 
+        startLockCountdown();
+      } else if (cleanHash === 'aD/home') {
+        window.refreshUI(); 
+        document.getElementById('view-ad-home').classList.add('active');
+      } else if (cleanHash === 'aD/tags') {
+        document.getElementById('view-ad-tags').classList.add('active');
+      } else if (cleanHash.startsWith('aD/id')) {
+        extractDetailRecord(originalHash.split('?=')[1], 'ad-detail-card', true); 
+        document.getElementById('view-ad-id').classList.add('active');
+      } else if (cleanHash.startsWith('aD/edit')) {
+        openAdminEditForm(originalHash.split('?=')[1]); 
+        document.getElementById('view-ad-edit').classList.add('active');
+      } else if (cleanHash === 'aD/create') {
+        populateTagDropdowns(); 
+        document.getElementById('view-ad-create').classList.add('active'); 
+        setTimeout(() => initSignatureCanvas('ad-canvas'), 50);
+      } else {
+        document.getElementById('view-error').classList.add('active');
+      }
+    });
+
+    window.onload = () => {
+      let originalHash = location.hash || '#/';
+      // Reset nhanh nếu tải lại trang sâu trái phép
+      if (originalHash !== '#/guest' && originalHash !== '#/aD') {
+          if (originalHash.includes('guest/id/create') && sessionStorage.getItem('gate_guest_passed') !== 'true') {
+              location.hash = '#/error';
+          }
+          if (originalHash.includes('aD/') && sessionStorage.getItem('gate_admin_passed') !== 'true') {
+              location.hash = '#/error';
+          }
+      }
+      window.dispatchEvent(new HashChangeEvent('hashchange'));
+    };
   </script>
 </body>
 </html>
