@@ -42,7 +42,7 @@
     .form-group input, .form-group textarea, .form-group select { width: 100%; background: #000; border: 1px solid var(--border); padding: 10px; color: #fff; border-radius: 4px; font-family: 'Exo 2'; }
     .form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color: var(--blue-glow); outline: none; }
     
-    .canvas-area { position: relative; background: #000; border: 1px solid var(--border); border-radius: 4px; overflow: hidden; margin-top: 5px; }
+    .canvas-area { position: relative; background: #000; border: 1px solid var(--border); border-radius: 4px; overflow: hidden; margin-bottom: 5px; }
     canvas { display: block; width: 100%; height: 180px; cursor: crosshair; touch-action: none; }
     .canvas-controls { position: absolute; top: 10px; right: 10px; display: flex; gap: 8px; z-index: 10; }
     .control-btn { background: rgba(255,255,255,0.1); border: 1px solid var(--dim); color: var(--white); padding: 4px 12px; border-radius: 4px; font-size: 0.75rem; cursor: pointer; font-weight: bold; }
@@ -77,7 +77,6 @@
   </div>
 
   <div id="router-wrapper">
-    <!-- ERROR 403 -->
     <div id="view-error" class="view">
       <div class="error-container">
         <div class="error-code">403</div>
@@ -85,7 +84,6 @@
       </div>
     </div>
 
-    <!-- GUEST: XÁC MINH DANH TÍNH -->
     <div id="view-guest-id-create" class="view">
       <div class="form-container">
         <h3 style="color:var(--blue-glow); text-align:center; margin-bottom:15px; font-family:'Orbitron';">XÁC MINH DANH TÍNH</h3>
@@ -107,13 +105,10 @@
       </div>
     </div>
 
-    <!-- GUEST: HOME -->
     <div id="view-guest-home" class="view"><div class="card-grid" id="guest-grid-container"></div></div>
 
-    <!-- GUEST: VIEW ID -->
     <div id="view-guest-id" class="view"><div class="form-container" id="guest-detail-card"></div></div>
 
-    <!-- ADMIN: HOME -->
     <div id="view-ad-home" class="view">
       <div class="filters-bar">
         <select id="filter-class" onchange="renderGridContainer('ad-grid-container', true)">
@@ -133,7 +128,6 @@
       </div>
     </div>
 
-    <!-- ADMIN: TẠO TAG -->
     <div id="view-ad-tags" class="view">
       <div class="form-container">
         <h3 style="color:var(--blue-glow); margin-bottom:20px; text-align:center; font-family:'Orbitron';">TẠO MỐI QUAN HỆ</h3>
@@ -146,10 +140,8 @@
       </div>
     </div>
 
-    <!-- ADMIN: VIEW ID -->
     <div id="view-ad-id" class="view"><div class="form-container" id="ad-detail-card"></div></div>
 
-    <!-- ADMIN: CREATE -->
     <div id="view-ad-create" class="view">
       <div class="form-container">
         <h3 style="color:var(--blue-glow); margin-bottom:20px; text-align:center; font-family:'Orbitron';">TẠO HỒ SƠ</h3>
@@ -175,11 +167,9 @@
       </div>
     </div>
 
-    <!-- ADMIN: EDIT -->
     <div id="view-ad-edit" class="view">
       <div class="form-container">
         <h3 style="color:var(--blue-glow); margin-bottom:20px; text-align:center; font-family:'Orbitron';">CHỈNH SỬA HỒ SƠ</h3>
-        <!-- Input ẩn này lưu ID gốc của hồ sơ -->
         <input type="hidden" id="edit-id" />
         <div class="form-group"><label>Họ và Tên</label><input type="text" id="edit-name" /></div>
         <div class="form-group"><label>Lớp</label><input type="text" id="edit-class" /></div>
@@ -194,7 +184,6 @@
     </div>
   </div>
 
-  <!-- FULLSCREEN SIGNATURE -->
   <div id="signature-modal-view" class="fullscreen-modal">
     <div style="display:flex; justify-content:space-between; font-family:'Orbitron'; color:var(--blue-glow); font-size:1rem;">
       <span>KÝ TOÀN MÀN HÌNH</span>
@@ -216,6 +205,7 @@
     function getTagInfo(relId) { return window.tagsDatabase.find(t => t.tagId === relId) || null; }
 
     function populateTagDropdowns() {
+      // Đoạn này sẽ gây lỗi Cannot read properties of undefined (reading 'map') nếu tagsDatabase chưa có dữ liệu
       const tagOpts = `<option value="">-- Không có --</option>` + window.tagsDatabase.map(t => `<option value="${t.tagId}">${t.tagName}</option>`).join('');
       const filterOpts = `<option value="ALL">-- Tất cả Mối quan hệ --</option>` + tagOpts;
       if(document.getElementById('ad-relId')) document.getElementById('ad-relId').innerHTML = tagOpts;
@@ -308,7 +298,6 @@
       document.getElementById('signature-modal-view').classList.remove('active');
     }
 
-    // --- CRUD HỒ SƠ ---
     async function handleGuestSubmit() {
       const payload = {
         action: "ADD_RECORD", id: generateID(5), name: document.getElementById('g-name').value.trim(),
@@ -336,14 +325,13 @@
     }
 
     async function saveAdminEditChanges() {
-      // ĐÂY LÀ ĐOẠN LẤY ID CŨ ĐỂ DÙNG CHUNG KHI SỬA
       const currentId = document.getElementById('edit-id').value;
       const originalRecord = window.localDatabase.find(i => i.id === currentId);
       if(!originalRecord) return;
       
       const payload = {
         action: "ADD_RECORD", 
-        id: currentId, // Dùng lại đúng ID cũ
+        id: currentId, 
         name: document.getElementById('edit-name').value.trim(),
         class: document.getElementById('edit-class').value.trim(), 
         birth: document.getElementById('edit-birth').value,
@@ -358,7 +346,6 @@
 
     async function deleteAdminRecord(idParam) {
       if (confirm("Đưa hồ sơ này vào trạng thái Remove?")) {
-        // Cùng dùng ID cũ để tạo bản remove
         const payload = { action: "ADD_RECORD", id: idParam, status: "remove", name: "", class: "", birth: "", note: "", sig: "", relId: "" };
         await sendToDrive(payload);
         location.hash = '#/aD/home';
@@ -372,7 +359,6 @@
       location.hash = '#/aD/home';
     }
 
-    // --- ROUTER ENGINE BẢO MẬT ---
     window.addEventListener('hashchange', () => {
       let originalHash = location.hash || '#/';
       let cleanHash = originalHash.replace('#/', '').replace('#', '');
@@ -439,7 +425,6 @@
     function openAdminEditForm(idParam) {
       const t = window.localDatabase.find(i => i.id === idParam);
       populateTagDropdowns();
-      // Nạp dữ liệu cũ vào form Edit
       document.getElementById('edit-id').value = t.id; 
       document.getElementById('edit-name').value = t.name;
       document.getElementById('edit-class').value = t.class; 
